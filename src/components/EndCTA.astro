@@ -1,0 +1,74 @@
+---
+/**
+ * EndCTA — 文末 CTA 區塊
+ *
+ * 米黃底 → 綠色漸層卡片，內含主按鈕（連 MeepShop 首頁）和次按鈕（連 YouTube）。
+ * 兩個連結都會自動帶 UTM。
+ */
+
+import { buildUtmUrl } from '../lib/utm';
+
+export interface Props {
+  /** 標題文字，預設「想看更多營養師的保健知識？」 */
+  heading?: string;
+  /** 副標 / 描述 */
+  description?: string;
+  /** 主按鈕文字，預設「逛逛愛營養官網」 */
+  primaryText?: string;
+  /** 主按鈕目的地，預設 MeepShop 首頁 */
+  primaryUrl?: string;
+  /** UTM campaign 識別碼，從文章 frontmatter 帶 */
+  campaign: string;
+  /** 副連結文字（YouTube） */
+  secondaryText?: string;
+  /** 副連結目的地，預設 Sunny YouTube 頻道 */
+  secondaryUrl?: string;
+}
+
+const {
+  heading = '想看更多營養師的保健知識？',
+  description = '愛營養，用給自己家人吃的標準做每一樣產品。',
+  primaryText = '逛逛愛營養官網',
+  primaryUrl = 'https://www.inutrition.com.tw/',
+  campaign,
+  secondaryText = '▶ 來看看我們的日常（Sunny 營養師 YouTube 頻道）',
+  secondaryUrl = 'https://www.youtube.com/@sunnyi333',
+} = Astro.props;
+
+const primaryHref = buildUtmUrl({
+  baseUrl: primaryUrl,
+  medium: 'end_cta',
+  campaign,
+  content: '文末_官網',
+});
+
+const secondaryHref = buildUtmUrl({
+  baseUrl: secondaryUrl,
+  medium: 'end_cta',
+  campaign,
+  content: '文末_YT',
+});
+---
+
+<div class="end-cta">
+  <h3>{heading}</h3>
+  <p>{description}</p>
+  <a
+    href={primaryHref}
+    class="btn-primary"
+    target="_top"
+    rel="noopener"
+    style="margin-bottom: 12px;"
+  >
+    {primaryText}
+  </a>
+  <br />
+  <a
+    href={secondaryHref}
+    target="_top"
+    rel="noopener"
+    style="display:inline-block;margin-top:8px;font-size:15px;color:var(--color-accent-dark);text-decoration:underline;text-underline-offset:3px;"
+  >
+    {secondaryText}
+  </a>
+</div>

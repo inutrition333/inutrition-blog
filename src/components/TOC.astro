@@ -1,0 +1,97 @@
+---
+/**
+ * TOC — 直式目錄（建置指令第 145-156 行明確要求改成直式）
+ *
+ * 桌機 ≥ 1100px：固定在文章右側，白底卡片、項目間細線分隔
+ * 手機 / 平板：隱藏（節省空間）
+ *
+ * 項目從文章 H2 自動產生（PostLayout 透過 entry.render() 拿 headings 後傳進來）。
+ * 滾動時當前章節自動 highlight（client-side script）。
+ */
+
+export interface TocItem {
+  /** H2 的 id（slug） */
+  slug: string;
+  /** H2 顯示文字 */
+  text: string;
+}
+
+export interface Props {
+  items: TocItem[];
+}
+
+const { items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <nav class="toc" id="toc" aria-label="文章目錄">
+      <div class="toc-title">目　錄</div>
+      <div class="toc-list">
+        {items.map((item) => (
+          <a href={`#${item.slug}`} data-toc-link={item.slug}>
+            {item.text}
+          </a>
+        ))}
+      </div>
+    </nav>
+  )
+}
+
+<script>
+  // 滾動時 highlight 當前章節——對應原 HTML <script> 第 681-695 行
+  // 用 IntersectionObserver 比 onscroll 高效且更準確
+  function initToc() {
+    const toc = document.getElementById('toc');
+    if (!toc) return;
+
+    const links = Array.from(
+      toc.querySelectorAll<HTMLAnchorElement>('a[data-toc-link]'),
+    );
+    if (links.length === 0) return;
+
+    // 建 slug → link 的映射
+    const linkMap = new Map<string, HTMLAnchorElement>();
+    links.forEach((link) => {
+      const slug = link.dataset.tocLink;
+      if (slug) linkMap.set(slug, link);
+    });
+
+    // 觀察所有 H2（也順便支援 H3）
+    const headings = Array.from(linkMap.keys())
+      .map((slug) => document.getElementById(slug))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (headings.length === 0) return;
+
+    let activeSlug: string | null = null;
+    function setActive(slug: string | null) {
+      if (slug === activeSlug) return;
+      activeSlug = slug;
+      links.forEach((l) => l.classList.remove('active'));
+      if (slug) {
+        const link = linkMap.get(slug);
+        link?.classList.add('active');
+      }
+    }
+
+    // 用 scroll position 判定哪個 H2 最接近頂部
+    function update() {
+      const scrollPos = window.scrollY + 200;
+      let current: HTMLElement | null = null;
+      for (const h of headings) {
+        if (h.offsetTop <= scrollPos) current = h;
+      }
+      setActive(current?.id ?? headings[0]?.id ?? null);
+    }
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initToc);
+  } else {
+    initToc();
+  }
+</script>

@@ -1,0 +1,115 @@
+# ==================================================
+# Decap CMS 設定檔
+#
+# 這份檔案定義後台表單長什麼樣、文章存哪裡、圖片放哪裡。
+# 使用者透過 /admin 進入後台，看到的所有欄位都從這裡來。
+#
+# 改分類請同時改：
+#   1. src/content/config.ts 的 CATEGORIES
+#   2. 這份檔案的 category options
+#   3. README.md 的分類說明
+# ==================================================
+
+# ─── 後端設定 ───────────────────────────────────────
+# 部署到 Vercel 後，需要搭配 GitHub OAuth 或
+# 外部 git-gateway proxy 才能讓使用者登入。
+# 開發階段可以先用 test-repo（不需要登入）來測 UI。
+# 正式上線前會改回 github backend。
+backend:
+  name: github
+  repo: inutrition333/inutrition-blog
+  branch: main
+
+# ─── 圖片 ──────────────────────────────────────────
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+# ─── 介面語言 ─────────────────────────────────────
+locale: zh_Hant
+
+# ─── 文章 Collection ──────────────────────────────
+collections:
+  - name: "posts"
+    label: "部落格文章"
+    folder: "src/content/posts"
+    create: true
+    slug: "{{slug}}"
+    preview_path: "posts/{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+
+    fields:
+      # 標題
+      - label: "文章標題"
+        name: "title"
+        widget: "string"
+        hint: "例如：苦瓜胜肽跟山苦瓜粉差在哪裡？弄懂這件事，挑選會更有方向"
+
+      # 分類（六個，2026-04-16 版）
+      - label: "分類"
+        name: "category"
+        widget: "select"
+        options:
+          - "體態管理"
+          - "腸胃保健"
+          - "代謝循環"
+          - "美容養顏"
+          - "睡眠放鬆"
+          - "銀髮族保養"
+
+      # 發布日期
+      - label: "發布日期"
+        name: "publishDate"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        format: "YYYY-MM-DD"
+
+      # 閱讀時間
+      - label: "閱讀時間（分鐘）"
+        name: "readTime"
+        widget: "number"
+        default: 5
+        value_type: "int"
+        min: 1
+        max: 30
+        hint: "大概估就好，讓讀者心裡有底"
+
+      # 主圖
+      - label: "主圖（選填）"
+        name: "heroImage"
+        widget: "image"
+        required: false
+        hint: "建議 1200px 寬、JPG 或 WebP、< 500KB。沒放的話會顯示漸層底色"
+
+      # 摘要
+      - label: "文章摘要"
+        name: "excerpt"
+        widget: "text"
+        hint: "首頁文章列表會顯示的簡短描述（1-2 句話）"
+
+      # UTM Campaign
+      - label: "活動識別碼"
+        name: "campaign"
+        widget: "string"
+        hint: "用於追蹤產品連結成效，建議格式：主題_年月，例如「苦瓜胜肽_202604」"
+
+      # 精選
+      - label: "精選文章？"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        hint: "打勾後這篇會在首頁置頂"
+
+      # 草稿
+      - label: "草稿？"
+        name: "draft"
+        widget: "boolean"
+        default: false
+        hint: "打勾 = 還沒寫完，不會出現在網站上（但會存在 GitHub）"
+
+      # 內文
+      - label: "文章內文"
+        name: "body"
+        widget: "markdown"
+        hint: "支援 Markdown 語法。要加產品卡片、延伸閱讀、Sunny 小叮嚀，請看操作手冊"

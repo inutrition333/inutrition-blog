@@ -1,0 +1,116 @@
+---
+/**
+ * AuthorCard — 側邊「Sunny 營養師」小卡
+ *
+ * 米黃底圓角卡片，內含：
+ *   - 80px 圓形大頭照（沒檔案時用 SVG 字母佔位）
+ *   - 標題「Sunny 黃君聖 營養師」
+ *   - 一段簡介
+ *   - YouTube 頻道按鈕
+ *
+ * 換大頭照：把圖檔放到 public/images/sunny-avatar.jpg 即可（不用改 code）。
+ */
+
+import { buildUtmUrl } from '../lib/utm';
+
+const youtubeUrl = buildUtmUrl({
+  baseUrl: 'https://www.youtube.com/@sunnyi333',
+  medium: 'sidebar',
+  campaign: 'site_home',
+  content: 'author_card_yt',
+});
+
+const avatarSrc = '/images/sunny-avatar.jpg';
+---
+
+<aside class="author-card" aria-label="關於作者">
+  <div class="author-avatar-wrap">
+    <img
+      class="author-avatar"
+      src={avatarSrc}
+      alt="Sunny 黃君聖 營養師"
+      width="80"
+      height="80"
+      loading="lazy"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+    />
+    <!-- 圖檔還沒上傳時的 fallback -->
+    <div class="author-avatar-fallback" aria-hidden="true">S</div>
+  </div>
+
+  <h3 class="author-name">Sunny 黃君聖 營養師</h3>
+  <p class="author-bio">
+    為了給家人吃才創立愛營養。每個配方親自監製、每批送驗才出貨。
+  </p>
+
+  <a class="author-yt-btn" href={youtubeUrl} target="_top" rel="noopener">
+    ▶ Sunny 的 YouTube 頻道
+  </a>
+</aside>
+
+<style>
+  .author-card {
+    background: var(--color-highlight);
+    border-radius: 14px;
+    padding: 20px 18px 22px;
+    text-align: center;
+  }
+  .author-avatar-wrap {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 12px;
+  }
+  .author-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--color-accent-light);
+  }
+  .author-avatar-fallback {
+    display: none; /* 預設藏起來，圖載入失敗才顯示 */
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    color: #fff;
+    border-radius: 50%;
+    font-family: var(--font-heading);
+    font-size: 32px;
+    font-weight: 700;
+  }
+  .author-name {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 8px;
+  }
+  .author-bio {
+    font-size: 13px;
+    color: var(--color-text-light);
+    line-height: 1.7;
+    margin: 0 0 14px;
+  }
+  .author-yt-btn {
+    display: inline-block;
+    background: var(--color-accent-dark);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 9px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition:
+      background 0.2s,
+      transform 0.15s;
+  }
+  .author-yt-btn:hover {
+    background: #2e4d26;
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+</style>

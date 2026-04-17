@@ -1,0 +1,42 @@
+---
+/**
+ * 單篇文章動態路由 — /posts/[slug]
+ *
+ * 在 build 時，Astro 會把 src/content/posts/ 裡每一篇 .md 預先產出靜態 HTML。
+ * draft=true 的文章會被過濾掉（不會出現在站點，但檔案還在 repo）。
+ */
+
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import { getRelatedPosts } from '../../lib/related';
+import type { TocItem } from '../../components/TOC.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+  return allPosts.map((post) => ({
+    // Astro 5 Content Layer：entry.id = 檔名（去副檔名），取代舊版 entry.slug
+    params: { slug: post.id },
+    props: { post, allPosts },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  allPosts: CollectionEntry<'posts'>[];
+}
+
+const { post, allPosts } = Astro.props;
+// Astro 5 的新 render API（取代 post.render()，舊 API 在 legacy collection 之外失效）
+const { Content, headings } = await render(post);
+
+// 把 markdown 自動抽出的 headings 轉成 TOC 項目（只取 H2）
+const tocItems: TocItem[] = headings
+  .filter((h) => h.depth === 2)
+  .map((h) => ({ slug: h.slug, text: h.text }));
+
+const relatedPosts = getRelatedPosts(allPosts, post, 2);
+---
+
+<PostLayout post={post} tocItems={tocItems} relatedPosts={relatedPosts}>
+  <Content />
+</PostLayout>

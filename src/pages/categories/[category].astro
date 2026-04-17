@@ -1,0 +1,126 @@
+---
+/**
+ * 分類頁 — /categories/[category]
+ *
+ * 顯示該分類底下所有文章，layout 跟首頁一樣（左側 sidebar + 右側卡片列表）。
+ * URL 裡的 category 是 encodeURIComponent 過的中文（例如 /categories/腸胃保健/）。
+ *
+ * 每個分類都會預先產生一個靜態頁面（即使該分類還沒有文章）。
+ */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BrandBar from '../../components/BrandBar.astro';
+import Footer from '../../components/Footer.astro';
+import CategorySidebar from '../../components/CategorySidebar.astro';
+import AuthorCard from '../../components/AuthorCard.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCategoryList, type CategoryName } from '../../lib/categories';
+import { CATEGORIES } from '../../content/config';
+
+export async function getStaticPaths() {
+  return CATEGORIES.map((cat) => ({
+    params: { category: cat },
+  }));
+}
+
+const { category } = Astro.params as { category: string };
+const categoryName = category as CategoryName;
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const categoryPosts = allPosts
+  .filter((p) => p.data.category === categoryName)
+  .sort(
+    (a, b) =>
+      new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime(),
+  );
+
+const categoryItems = getCategoryList(allPosts);
+---
+
+<BaseLayout
+  title={`${categoryName}｜愛營養 iNutrition 部落格`}
+  description={`${categoryName}分類的所有文章——Sunny 營養師的保健筆記。`}
+>
+  <BrandBar campaign={`分類_${categoryName}`} />
+
+  <main class="home-grid">
+    <div class="home-sidebar">
+      <CategorySidebar items={categoryItems} current={categoryName} />
+      <div class="home-sidebar-author">
+        <AuthorCard />
+      </div>
+    </div>
+
+    <section class="home-main" aria-label={`${categoryName}文章列表`}>
+      {
+        categoryPosts.length === 0 ? (
+          <div class="home-empty">
+            <p>「{categoryName}」分類還沒有文章。</p>
+            <a href="/" style="color: var(--color-accent-dark); text-decoration: underline; text-underline-offset: 3px;">← 回全部文章</a>
+          </div>
+        ) : (
+          <div class="home-posts">
+            {categoryPosts.map((post) => (
+              <PostCard post={post} />
+            ))}
+          </div>
+        )
+      }
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .home-grid {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 32px;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+  .home-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .home-main {
+    min-width: 0;
+  }
+  .home-posts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .home-empty {
+    background: var(--color-card-bg);
+    border-radius: 14px;
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--color-text-light);
+    box-shadow: 0 2px 12px var(--color-card-shadow);
+    line-height: 2;
+  }
+
+  @media (max-width: 1024px) {
+    .home-grid {
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 24px;
+      padding: 24px 18px 48px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .home-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px 14px 36px;
+    }
+    .home-sidebar-author {
+      display: none;
+    }
+  }
+</style>

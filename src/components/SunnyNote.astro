@@ -1,0 +1,22 @@
+---
+/**
+ * SunnyNote — Sunny 營養師的小叮嚀（綠色卡片）
+ *
+ * 可在 .astro 頁面用：<SunnyNote>內文</SunnyNote>
+ * 也可以在 markdown 用 :::sunny ... ::: directive（最常用）
+ *
+ * 兩種寫法 render 出來的 HTML 完全一致——共用 renderSunnyNote 函數。
+ */
+
+import { renderSunnyNote } from '../lib/markdown-blocks';
+
+export interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+const slotHtml = await Astro.slots.render('default');
+const html = renderSunnyNote({ title, htmlContent: slotHtml });
+---
+
+<Fragment set:html={html} />

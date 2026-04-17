@@ -1,0 +1,79 @@
+---
+/**
+ * PostLayout — 單篇文章頁外殼
+ *
+ * 把 BaseLayout 包好，再依 hero / TOC / 內文 / 分享 / CTA / 相關文章 順序組裝。
+ * 所有元件都從 src/components 搬來；資料從 [slug].astro 那邊傳進來。
+ */
+
+import BaseLayout from './BaseLayout.astro';
+import BrandBar from '../components/BrandBar.astro';
+import Hero from '../components/Hero.astro';
+import TOC, { type TocItem } from '../components/TOC.astro';
+import ShareBar from '../components/ShareBar.astro';
+import EndCTA from '../components/EndCTA.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
+import Footer from '../components/Footer.astro';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  /** 當前這篇文章 entry */
+  post: CollectionEntry<'posts'>;
+  /** 從文章 markdown 自動抽出的目錄項目（H2） */
+  tocItems: TocItem[];
+  /** 相關文章（兩篇） */
+  relatedPosts: CollectionEntry<'posts'>[];
+}
+
+const { post, tocItems, relatedPosts } = Astro.props;
+const { title, category, publishDate, readTime, excerpt, heroImage, campaign } = post.data;
+---
+
+<BaseLayout
+  title={title}
+  description={excerpt}
+  ogImage={heroImage}
+>
+  <!-- 滾動進度條（建置指令第 524-534 行） -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <BrandBar campaign={campaign} />
+
+  <Hero
+    category={category}
+    title={title}
+    publishDate={publishDate}
+    readTime={readTime}
+  />
+
+  <TOC items={tocItems} />
+
+  <article class="article-body">
+    <slot />
+
+    <ShareBar title={title} />
+
+    <EndCTA campaign={campaign} />
+  </article>
+
+  <RelatedPosts posts={relatedPosts} />
+
+  <Footer />
+
+  <!-- 滾動進度條 client-side script（建置指令第 527-533 行） -->
+  <script is:inline>
+    (function () {
+      var bar = document.getElementById('progressBar');
+      if (!bar) return;
+      function update() {
+        var doc = document.documentElement;
+        var scrollTop = doc.scrollTop || document.body.scrollTop;
+        var scrollHeight = doc.scrollHeight - doc.clientHeight;
+        var progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+        bar.style.width = progress + '%';
+      }
+      update();
+      window.addEventListener('scroll', update, { passive: true });
+    })();
+  </script>
+</BaseLayout>

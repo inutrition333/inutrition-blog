@@ -1,0 +1,35 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.production
+.env.local
+
+# macOS
+.DS_Store
+
+# jetbrains / vscode / claude code
+.idea/
+.vscode/
+.claude/
+
+# 使用者的原始參考檔案（Word、HTML 樣板），不需要進 repo
+*.docx
+*.doc
+blog-desktop*.html
+blog-mobile*.html
+愛營養部落格_ClaudeCode建置指令.md
+
+# 開發工具
+screenshot.mjs

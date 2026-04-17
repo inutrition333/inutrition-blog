@@ -1,0 +1,703 @@
+/* ==========================================================================
+   愛營養 iNutrition 部落格 — 全站共用樣式
+   這個檔案 = blog-desktop (1).html 裡的 <style> 區塊，
+   + blog-mobile (1).html 裡的手機版 override 被包進 @media
+   = 所有視覺變數和元件樣式的單一來源 (single source of truth)
+   ========================================================================== */
+
+/* ===== 1. 色彩、字型、寬度變數 ================================================ */
+:root {
+  --color-bg: #FDFAF5;
+  --color-text: #2E2820;
+  --color-text-light: #5C5347;
+  --color-accent: #5E8A50;
+  --color-accent-dark: #4A7340;
+  --color-accent-light: #E6EFE3;
+  --color-accent-warm: #B07D4F;
+  --color-divider: #E0D9CE;
+  --color-card-bg: #FFFFFF;
+  --color-card-shadow: rgba(46, 40, 32, 0.08);
+  --color-highlight: #F5EFDF;
+  --font-heading: 'Noto Sans TC', sans-serif;
+  --font-body: 'Noto Sans TC', sans-serif;
+  --max-width: 720px;
+}
+
+/* ===== 2. Reset + 基礎排版 =================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  /* 防止手機任何元素意外撐爆，造成全頁可橫向捲動 */
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 2.0;
+  font-size: 18px;
+  font-weight: 400;
+  overflow-x: hidden;
+  /* 中文長字串（標題、產品名）允許在任意位置斷行 */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* 圖片預設不超出容器 */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== 3. 頂部品牌列 ======================================================== */
+.brand-bar {
+  background: var(--color-card-bg);
+  border-bottom: 1px solid var(--color-divider);
+  padding: 16px 24px;
+  text-align: center;
+}
+.brand-bar a {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  color: var(--color-accent);
+  text-decoration: none;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+.brand-bar span {
+  display: block;
+  font-size: 11px;
+  color: var(--color-text-light);
+  letter-spacing: 4px;
+  margin-top: 2px;
+  font-weight: 300;
+}
+
+/* ===== 4. Hero 區塊（文章頁使用） ============================================== */
+.hero {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 7;
+  overflow: hidden;
+  background: linear-gradient(135deg, #E6EFE3 0%, #F5EFDF 50%, #EDDCC8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-overlay {
+  text-align: center;
+  padding: 40px 24px;
+}
+.hero-category {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--color-accent-dark);
+  border: 1.5px solid var(--color-accent);
+  border-radius: 20px;
+  padding: 5px 18px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 5vw, 34px);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.hero-meta {
+  font-size: 15px;
+  color: var(--color-text-light);
+  font-weight: 400;
+}
+.hero-meta strong {
+  color: var(--color-accent-warm);
+  font-weight: 500;
+}
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+  background: var(--color-accent);
+}
+.hero::before {
+  width: 200px;
+  height: 200px;
+  top: -60px;
+  right: -40px;
+}
+.hero::after {
+  width: 120px;
+  height: 120px;
+  bottom: -30px;
+  left: -20px;
+}
+
+/* ===== 5. 文章主體 ========================================================== */
+.article-body {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+.article-body p {
+  margin-bottom: 24px;
+  font-weight: 400;
+}
+.article-body h2 {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 56px;
+  margin-bottom: 20px;
+  padding-left: 16px;
+  border-left: 4px solid var(--color-accent);
+  line-height: 1.5;
+  scroll-margin-top: 80px; /* 讓 TOC 錨點跳轉時不貼頂 */
+}
+.article-body h3 {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-accent-warm);
+  margin-top: 40px;
+  margin-bottom: 16px;
+}
+.article-body a {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(94, 138, 80, 0.4);
+  transition: text-decoration-color 0.2s;
+}
+.article-body a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+/* ===== 6. 重點框（highlight-box） ============================================ */
+.highlight-box {
+  background: var(--color-highlight);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 32px 0;
+  border-left: 4px solid var(--color-accent-warm);
+  font-size: 17px;
+  line-height: 1.9;
+}
+.highlight-box .label {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-accent-warm);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+/* ===== 7. Sunny 小叮嚀 ===================================================== */
+.sunny-note {
+  background: var(--color-accent-light);
+  border-radius: 16px;
+  padding: 28px 28px 28px 72px;
+  margin: 36px 0;
+  position: relative;
+  font-size: 17px;
+}
+.sunny-note::before {
+  content: '🌿';
+  position: absolute;
+  left: 24px;
+  top: 26px;
+  font-size: 28px;
+}
+.sunny-note .note-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-accent-dark);
+  margin-bottom: 8px;
+  font-size: 17px;
+}
+
+/* ===== 8. 文內插圖 ========================================================= */
+.article-image {
+  margin: 36px 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.article-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.article-image figcaption {
+  font-size: 14px;
+  color: var(--color-text-light);
+  text-align: center;
+  padding: 12px 16px;
+  font-weight: 400;
+  background: var(--color-card-bg);
+}
+
+/* ===== 9. 產品導購卡片（加強版） ================================================ */
+.product-card {
+  background: var(--color-card-bg);
+  border-radius: 16px;
+  box-shadow: 0 2px 20px var(--color-card-shadow);
+  margin: 44px 0;
+  overflow: hidden;
+  transition: box-shadow 0.3s;
+}
+.product-card:hover {
+  box-shadow: 0 4px 30px rgba(46, 40, 32, 0.12);
+}
+.product-card-inner {
+  display: flex;
+  align-items: stretch;
+}
+.product-card-image {
+  flex: 0 0 200px;
+  background: linear-gradient(135deg, var(--color-accent-light), #EDDCC8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  min-height: 200px;
+  color: var(--color-text-light);
+  text-align: center;
+  padding: 12px;
+}
+.product-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.product-card-content {
+  flex: 1;
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+}
+.product-card-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-accent-dark);
+  background: var(--color-accent-light);
+  padding: 4px 12px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  align-self: flex-start;
+}
+.product-card-content h4 {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.product-card-content p {
+  font-size: 15px;
+  color: var(--color-text-light);
+  line-height: 1.8;
+  margin-bottom: 16px;
+  flex: 1;
+}
+.product-card-cta,
+.article-body .product-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: #3D6233;
+  padding: 14px 32px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  align-self: flex-start;
+  letter-spacing: 0.5px;
+}
+.product-card-cta:hover,
+.article-body .product-card-cta:hover {
+  background: #2E4D26;
+  color: #FFFFFF;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.product-card-cta::after {
+  content: ' →';
+}
+.product-trust {
+  font-size: 13px;
+  color: var(--color-text-light);
+  margin-top: 10px;
+  line-height: 1.6;
+}
+.product-trust strong {
+  color: var(--color-accent-dark);
+  font-weight: 500;
+}
+
+/* ===== 10. 延伸閱讀小卡（文內） ================================================ */
+.related-link {
+  display: block;
+  background: var(--color-highlight);
+  border-radius: 12px;
+  padding: 18px 24px;
+  margin: 28px 0;
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.related-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px var(--color-card-shadow);
+  text-decoration: none;
+}
+.related-link .related-label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--color-accent-warm);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.related-link .related-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-accent-dark);
+  line-height: 1.5;
+}
+.related-link .related-title::after {
+  content: '→';
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* ===== 11. 文末 CTA 區塊 =================================================== */
+.end-cta {
+  text-align: center;
+  padding: 48px 24px;
+  margin-top: 48px;
+  background: linear-gradient(180deg, transparent, var(--color-accent-light));
+  border-radius: 20px;
+}
+.end-cta h3 {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+.end-cta p {
+  color: var(--color-text-light);
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+.end-cta .btn-primary {
+  display: inline-block;
+  background: var(--color-accent-dark);
+  color: #FFFFFF;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 14px 36px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.end-cta .btn-primary:hover {
+  background: #2E4D26;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+}
+
+/* ===== 12. 分享按鈕列 ===================================================== */
+.share-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 36px 0;
+  padding: 20px 0;
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+  flex-wrap: wrap;
+}
+.share-bar .share-label {
+  font-size: 15px;
+  color: var(--color-text-light);
+  font-weight: 500;
+  margin-right: 4px;
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  cursor: pointer;
+  border: none;
+}
+.share-btn:hover {
+  opacity: 0.85;
+}
+.share-btn.line {
+  background: #06C755;
+  color: #fff;
+}
+.share-btn.fb {
+  background: #1877F2;
+  color: #fff;
+}
+.share-btn.copy-link {
+  background: var(--color-highlight);
+  color: var(--color-text);
+  border: 1px solid var(--color-divider);
+}
+
+/* ===== 13. Footer ======================================================== */
+.footer {
+  text-align: center;
+  padding: 32px 24px;
+  border-top: 1px solid var(--color-divider);
+  font-size: 14px;
+  color: var(--color-text-light);
+  font-weight: 400;
+}
+.footer a {
+  color: var(--color-accent-dark);
+  text-decoration: none;
+}
+
+/* ===== 14. 直式目錄（TOC）— 依使用者要求改為直式 =============================== */
+/* 桌機版固定在側邊；手機版隱藏（改用文章頂部的浮動目錄或省略） */
+.toc {
+  display: none;
+}
+@media (min-width: 1100px) {
+  .toc {
+    display: block;
+    position: fixed;
+    right: calc((100vw - 960px) / 2 - 220px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200px;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-divider);
+    border-radius: 10px;
+    padding: 18px 18px 14px;
+    box-shadow: 0 2px 12px var(--color-card-shadow);
+  }
+  .toc-title {
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--color-text-light);
+    margin-bottom: 12px;
+    font-weight: 500;
+    text-align: center;
+  }
+  .toc-list {
+    display: flex;
+    flex-direction: column;
+  }
+  .toc-list a {
+    display: block;
+    font-size: 15px;
+    color: var(--color-accent);
+    text-decoration: none;
+    padding: 6px 0;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--color-highlight);
+    transition: color 0.2s;
+  }
+  .toc-list a:last-child {
+    border-bottom: none;
+  }
+  .toc-list a:hover,
+  .toc-list a.active {
+    color: var(--color-accent-dark);
+    font-weight: 500;
+  }
+}
+
+/* ===== 15. 滾動進度條 =================================================== */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--color-accent);
+  width: 0%;
+  z-index: 999;
+  transition: width 0.1s linear;
+}
+
+/* ===== 16. 段落裝飾線 =================================================== */
+.section-divider {
+  text-align: center;
+  margin: 48px 0;
+  color: var(--color-divider);
+  font-size: 20px;
+  letter-spacing: 12px;
+}
+
+/* ==========================================================================
+   ===== 手機版 RWD 覆寫（對應 blog-mobile (1).html 第 438-495 行） =============
+   ========================================================================== */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+    line-height: 1.9;
+  }
+  .hero {
+    aspect-ratio: 16 / 9;
+  }
+  .hero h1 {
+    font-size: 22px;
+    line-height: 1.6;
+  }
+  .hero-category {
+    font-size: 11px;
+    padding: 4px 14px;
+  }
+  .hero-meta {
+    font-size: 13px;
+  }
+  .article-body {
+    padding: 32px 18px 64px;
+  }
+  .article-body h2 {
+    font-size: 20px;
+    margin-top: 44px;
+  }
+  .article-body h3 {
+    font-size: 18px;
+    margin-top: 32px;
+  }
+  .article-body p {
+    margin-bottom: 20px;
+  }
+  .highlight-box {
+    padding: 20px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+  .sunny-note {
+    padding: 24px 20px 24px 60px;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+  .sunny-note::before {
+    left: 18px;
+    top: 22px;
+    font-size: 24px;
+  }
+  .product-card {
+    margin: 36px 0;
+    border-radius: 12px;
+  }
+  .product-card-inner {
+    flex-direction: column;
+  }
+  .product-card-image {
+    flex: none;
+    height: 200px;
+  }
+  .product-card-content {
+    padding: 20px;
+  }
+  .product-card-content h4 {
+    font-size: 17px;
+  }
+  .product-card-content p {
+    font-size: 14px;
+  }
+  .product-card-cta,
+  .article-body .product-card-cta {
+    font-size: 16px;
+    padding: 14px 28px;
+    width: 100%;
+    justify-content: center;
+    border-radius: 10px;
+  }
+  .product-trust {
+    font-size: 12px;
+  }
+  .share-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .share-bar .share-label {
+    margin-bottom: 4px;
+  }
+  .share-btn {
+    justify-content: center;
+    padding: 12px 16px;
+    font-size: 15px;
+    border-radius: 10px;
+  }
+  .end-cta {
+    padding: 36px 18px;
+    border-radius: 16px;
+  }
+  .end-cta h3 {
+    font-size: 19px;
+  }
+  .end-cta p {
+    font-size: 15px;
+  }
+  .end-cta .btn-primary {
+    font-size: 16px;
+    padding: 14px 28px;
+    width: 100%;
+    text-align: center;
+    display: block;
+    border-radius: 10px;
+  }
+  .section-divider {
+    margin: 36px 0;
+  }
+  .brand-bar {
+    padding: 14px 18px;
+  }
+  .brand-bar a {
+    font-size: 16px;
+  }
+  .footer {
+    font-size: 13px;
+    padding: 24px 18px;
+  }
+  .article-image {
+    margin: 28px 0;
+    border-radius: 10px;
+  }
+  .article-image figcaption {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+}

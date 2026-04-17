@@ -1,0 +1,39 @@
+---
+/**
+ * Hero — 文章頁的視覺主圖區塊
+ *
+ * 漸層背景照樣板：linear-gradient(135deg, #E6EFE3 0%, #F5EFDF 50%, #EDDCC8 100%)
+ * 顯示分類標籤、文章主標題、作者 + 日期 + 閱讀時間。
+ */
+
+export interface Props {
+  category: string;
+  title: string;
+  author?: string;
+  publishDate: Date;
+  readTime?: number;
+}
+
+const {
+  category,
+  title,
+  author = 'Sunny 黃君聖營養師',
+  publishDate,
+  readTime = 5,
+} = Astro.props;
+
+// 顯示成「2026 年 4 月」格式（建置指令樣板用法）
+function formatDate(d: Date): string {
+  return `${d.getFullYear()} 年 ${d.getMonth() + 1} 月`;
+}
+---
+
+<section class="hero">
+  <div class="hero-overlay">
+    <div class="hero-category">{category}</div>
+    <h1>{title}</h1>
+    <div class="hero-meta">
+      <strong>{author}</strong> ・ {formatDate(publishDate)} ・ 閱讀約 {readTime} 分鐘
+    </div>
+  </div>
+</section>

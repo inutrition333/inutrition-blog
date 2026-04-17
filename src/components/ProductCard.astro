@@ -1,0 +1,24 @@
+---
+/**
+ * ProductCard — 產品導購卡片（這是轉換率核心元件）
+ *
+ * markdown 內用：:::product ... ::: directive（使用者最常用）
+ * .astro 頁面也能直接用：
+ *   <ProductCard
+ *     image="/images/xian-chang.jpg"
+ *     title="纖暢益生菌"
+ *     description="..."
+ *     meepshopUrl="https://..."
+ *     utmContent="纖暢益生菌_首頁_精選"
+ *     campaign="首頁_精選產品"
+ *   />
+ */
+
+import { renderProductCard, type ProductCardProps } from '../lib/markdown-blocks';
+
+export type Props = ProductCardProps;
+
+const html = renderProductCard(Astro.props);
+---
+
+<Fragment set:html={html} />

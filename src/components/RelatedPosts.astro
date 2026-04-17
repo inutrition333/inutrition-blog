@@ -1,0 +1,108 @@
+---
+/**
+ * RelatedPosts — 文末「你可能也想看」區塊
+ *
+ * 兩欄 grid，每張卡片：上方主圖佔位 + 分類小標 + 文章標題
+ * 邏輯交給 src/lib/related.ts 的 getRelatedPosts，這裡只負責渲染。
+ */
+
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  posts: CollectionEntry<'posts'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class="related-posts" aria-label="你可能也想看">
+      <h2 class="related-posts-title">你可能也想看</h2>
+      <div class="related-posts-grid">
+        {posts.map((p) => (
+          <a class="related-post-card" href={`/posts/${p.id}`}>
+            <div
+              class="related-post-image"
+              style={
+                p.data.heroImage
+                  ? `background-image: url('${p.data.heroImage}'); background-size: cover; background-position: center;`
+                  : undefined
+              }
+            />
+            <div class="related-post-body">
+              <div class="related-post-category">{p.data.category}</div>
+              <div class="related-post-h">{p.data.title}</div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .related-posts {
+    max-width: var(--max-width);
+    margin: 48px auto 0;
+    padding: 0 24px;
+  }
+  .related-posts-title {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-light);
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .related-posts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .related-post-card {
+    display: block;
+    background: var(--color-card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: 0 2px 12px var(--color-card-shadow);
+    transition: transform 0.15s, box-shadow 0.2s;
+    color: inherit;
+  }
+  .related-post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 40, 32, 0.12);
+    text-decoration: none;
+  }
+  .related-post-image {
+    height: 100px;
+    background: linear-gradient(135deg, var(--color-accent-light), #eddcc8);
+  }
+  .related-post-body {
+    padding: 14px 16px 18px;
+  }
+  .related-post-category {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--color-accent-dark);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .related-post-h {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.5;
+  }
+  @media (max-width: 600px) {
+    .related-posts {
+      padding: 0 18px;
+    }
+    .related-posts-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+  }
+</style>

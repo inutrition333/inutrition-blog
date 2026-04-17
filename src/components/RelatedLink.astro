@@ -1,0 +1,19 @@
+---
+/**
+ * RelatedLink — 文內延伸閱讀小卡（米黃底 + 綠字 + 右箭頭）
+ *
+ * markdown 內用：:::related slug=health-check-breakfast-tips ... :::
+ */
+
+import { renderRelatedLink } from '../lib/markdown-blocks';
+
+export interface Props {
+  slug: string;
+  title: string;
+  label?: string;
+}
+
+const html = renderRelatedLink(Astro.props);
+---
+
+<Fragment set:html={html} />

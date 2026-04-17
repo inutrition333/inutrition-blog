@@ -1,0 +1,129 @@
+---
+/**
+ * BaseLayout.astro — 全站共用外殼
+ *
+ * 任何頁面（首頁、文章頁、分類頁）都用這個當根 layout。
+ * 負責：
+ *   1. <html>、<head> 的標配（charset、viewport、字型、SEO meta）
+ *   2. 載入全站 CSS 變數
+ *   3. GA4 追蹤碼（透過 PUBLIC_GA_ID 環境變數開關）
+ *   4. 全站通用的「點擊 utm 連結 → 送 GA 事件」腳本
+ *   5. <slot /> 讓子頁面塞內容
+ *
+ * 注意：BrandBar 和 Footer 沒有放在這裡——個別頁面自己 import，
+ * 因為 Decap CMS 的 /admin 路徑（public/admin/index.html）不會走 Astro，
+ * 把品牌列寫進 BaseLayout 反而綁死後台，不划算。
+ */
+
+import '../styles/global.css';
+
+export interface Props {
+  /** 分頁標題，會自動加上「｜愛營養 iNutrition」後綴 */
+  title: string;
+  /** SEO description；文章頁請傳 excerpt */
+  description?: string;
+  /** Open Graph 分享圖，絕對路徑或完整網址 */
+  ogImage?: string;
+  /** canonical URL，通常 Astro 會自動帶入，自己傳可覆寫 */
+  canonical?: string;
+  /** 這頁要不要給搜尋引擎索引，預設 true */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = '愛營養 iNutrition 部落格——Sunny 營養師帶你用最單純的方式，照顧自己和家人的健康。',
+  ogImage,
+  canonical,
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title.includes('愛營養') ? title : `${title}｜愛營養 iNutrition`;
+const siteUrl = Astro.site?.toString() ?? 'https://blog.inutrition.com.tw';
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, siteUrl).toString();
+const ogImageUrl = ogImage ?? new URL('/og-default.jpg', siteUrl).toString();
+
+// GA4 追蹤 ID——之後讓使用者在 Vercel 設定 PUBLIC_GA_ID 環境變數
+// 沒設就不載 GA script（避免開發時也往 GA 送資料）
+const gaId = import.meta.env.PUBLIC_GA_ID;
+---
+
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph / 社群分享 -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:site_name" content="愛營養 iNutrition" />
+    <meta property="og:locale" content="zh_TW" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- favicon：等使用者提供正式檔案後替換 -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Noto Sans TC（和樣板一致） -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- GA4：只在有設 PUBLIC_GA_ID 時載入 -->
+    {
+      gaId && (
+        <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+          <script is:inline define:vars={{ gaId }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', gaId);
+          </script>
+        </>
+      )
+    }
+  </head>
+
+  <body>
+    <slot />
+
+    <!--
+      全站通用：點擊任何帶 utm_ 的連結都會送一個 GA 事件
+      （產品卡片按鈕、文末 CTA、品牌列等都會觸發）
+      這段邏輯直接搬自 blog-desktop (1).html 的 <script> 區塊
+    -->
+    <script is:inline>
+      document.addEventListener('click', function (e) {
+        const link = e.target.closest('a[href*="utm_"]');
+        if (link && typeof gtag === 'function') {
+          try {
+            const url = new URL(link.href);
+            gtag('event', 'product_click', {
+              event_category: 'blog_cta',
+              event_label: url.searchParams.get('utm_content') || 'unknown',
+              campaign: url.searchParams.get('utm_campaign') || 'unknown',
+              link_url: link.href,
+            });
+          } catch (err) {
+            /* 非絕對網址就略過 */
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

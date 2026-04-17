@@ -1,0 +1,125 @@
+---
+/**
+ * ShareBar — 三個分享按鈕：LINE / Facebook / 複製連結
+ *
+ * 三個 share function 直接從 blog-desktop (1).html <script> 區塊搬過來，
+ * 包進一個 IIFE 避免汙染全域。LINE 分享訊息會帶這篇文章的標題。
+ *
+ * 複製成功會跳一個 toast（半透明黑底圓角，置中）。
+ */
+
+export interface Props {
+  /** 文章標題，用於 LINE 分享訊息 */
+  title: string;
+  /** 旁邊的小字標籤，預設「覺得實用？分享給家人朋友：」 */
+  label?: string;
+}
+
+const { title, label = '覺得實用？分享給家人朋友：' } = Astro.props;
+---
+
+<div class="share-bar" data-share-bar data-share-title={title}>
+  <span class="share-label">{label}</span>
+  <button type="button" class="share-btn line" data-share="line">LINE 分享</button>
+  <button type="button" class="share-btn fb" data-share="fb">Facebook 分享</button>
+  <button type="button" class="share-btn copy-link" data-share="copy">複製連結</button>
+</div>
+
+<!-- 複製成功提示——固定中央，2.5 秒後自動消失 -->
+<div
+  id="toast"
+  style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(46,40,32,0.92);color:#fff;padding:20px 36px;border-radius:12px;font-size:17px;font-weight:500;z-index:9999;text-align:center;line-height:1.6;box-shadow:0 4px 20px rgba(0,0,0,0.15);"
+>
+  ✓ 連結已複製！<br />
+  <span style="font-size:14px;opacity:0.8;">可以貼到 LINE 或訊息裡分享</span>
+</div>
+
+<script>
+  // 三個分享函數——直接搬自 blog-desktop (1).html 第 711-749 行
+  // 用事件代理 + data-share 屬性，避免 inline onclick handler
+  (function () {
+    function showToast() {
+      const t = document.getElementById('toast');
+      if (!t) return;
+      t.style.display = 'block';
+      setTimeout(() => {
+        t.style.display = 'none';
+      }, 2500);
+    }
+
+    function fallbackCopy(u: string) {
+      const ta = document.createElement('textarea');
+      ta.value = u;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText =
+        'position:fixed;left:0;top:0;width:1px;height:1px;padding:0;border:none;outline:none;opacity:0.01;background:transparent;';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.setSelectionRange(0, u.length);
+      let ok = false;
+      try {
+        ok = document.execCommand('copy');
+      } catch (e) {
+        /* noop */
+      }
+      document.body.removeChild(ta);
+      if (ok) {
+        showToast();
+      } else {
+        prompt('長按下方網址複製：', u);
+      }
+    }
+
+    function doLineShare(title: string) {
+      const u = window.location.href;
+      const m = `立刻看這篇：${title}\n${u}`;
+      const lineUrl = 'https://line.me/R/share?text=' + encodeURIComponent(m);
+      // window.top 確保 iframe 內也能跳出
+      try {
+        window.top!.location.href = lineUrl;
+      } catch {
+        window.location.href = lineUrl;
+      }
+    }
+
+    function doFbShare() {
+      const u = window.location.href;
+      const fbUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(u);
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        try {
+          window.top!.location.href = fbUrl;
+        } catch {
+          window.location.href = fbUrl;
+        }
+      } else {
+        window.open(fbUrl, '_blank', 'width=600,height=400');
+      }
+    }
+
+    function doCopy() {
+      const u = window.location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(u)
+          .then(() => showToast())
+          .catch(() => fallbackCopy(u));
+      } else {
+        fallbackCopy(u);
+      }
+    }
+
+    // 事件代理——一次綁全文件，所有 .share-bar 都生效
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const btn = target.closest<HTMLElement>('[data-share]');
+      if (!btn) return;
+      const action = btn.dataset.share;
+      const bar = btn.closest<HTMLElement>('[data-share-bar]');
+      const title = bar?.dataset.shareTitle ?? document.title;
+      if (action === 'line') doLineShare(title);
+      else if (action === 'fb') doFbShare();
+      else if (action === 'copy') doCopy();
+    });
+  })();
+</script>

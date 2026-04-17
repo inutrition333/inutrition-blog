@@ -1,0 +1,123 @@
+---
+/**
+ * 首頁 / — 文章列表
+ *
+ * 桌機：左側 sidebar（260px：分類 + 作者卡）+ 右側文章卡片列表
+ * 手機（≤ 900px）：sidebar 收到上方（分類變橫向捲動標籤、作者卡藏起來節省空間）
+ *
+ * 文章排序：精選文章（featured: true）優先，其後依發布日期新到舊。
+ * 草稿（draft: true）一律不顯示。
+ */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BrandBar from '../components/BrandBar.astro';
+import Footer from '../components/Footer.astro';
+import CategorySidebar from '../components/CategorySidebar.astro';
+import AuthorCard from '../components/AuthorCard.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCategoryList } from '../lib/categories';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+
+// 排序：featured 優先，再按日期新到舊
+const sortedPosts = [...allPosts].sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return (
+    new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime()
+  );
+});
+
+const categoryItems = getCategoryList(allPosts);
+---
+
+<BaseLayout
+  title="愛營養 iNutrition 部落格"
+  description="Sunny 營養師的保健筆記——用最單純的方式照顧自己和家人的健康。"
+  canonical="https://blog.inutrition.com.tw/"
+>
+  <BrandBar campaign="site_home" />
+
+  <main class="home-grid">
+    <div class="home-sidebar">
+      <CategorySidebar items={categoryItems} current="全部文章" />
+      <div class="home-sidebar-author">
+        <AuthorCard />
+      </div>
+    </div>
+
+    <section class="home-main" aria-label="文章列表">
+      {
+        sortedPosts.length === 0 ? (
+          <div class="home-empty">
+            <p>還沒有文章。等 Sunny 寫第一篇 ✏️</p>
+          </div>
+        ) : (
+          <div class="home-posts">
+            {sortedPosts.map((post) => (
+              <PostCard post={post} />
+            ))}
+          </div>
+        )
+      }
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .home-grid {
+    display: grid;
+    /* minmax(0, 1fr) 強制讓 main column 能比 max-content 還窄
+       否則內容（卡片、標題）會把 column 撐爆超出 viewport */
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 32px;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+  .home-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .home-main {
+    min-width: 0; /* 防止 grid child 撐爆 */
+  }
+  .home-posts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .home-empty {
+    background: var(--color-card-bg);
+    border-radius: 14px;
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--color-text-light);
+    box-shadow: 0 2px 12px var(--color-card-shadow);
+  }
+
+  /* 中型螢幕（小筆電 / 大平板）：sidebar 維持左側但縮窄 */
+  @media (max-width: 1024px) {
+    .home-grid {
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 24px;
+      padding: 24px 18px 48px;
+    }
+  }
+
+  /* 手機 / 直立平板：sidebar 收到上方變成水平標籤列 */
+  @media (max-width: 768px) {
+    .home-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px 14px 36px;
+    }
+    /* 手機版的作者卡藏起來——首頁主要要看文章，作者資訊放到 footer 或 about 頁更合理 */
+    .home-sidebar-author {
+      display: none;
+    }
+  }
+</style>
