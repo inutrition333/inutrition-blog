@@ -19,6 +19,10 @@ backend:
   name: github
   repo: inutrition333/inutrition-blog
   branch: main
+  # OAuth 代理由同站的 Vercel serverless function 提供
+  # 程式碼在 /api/auth.js 和 /api/callback.js
+  base_url: https://inutrition-blog.vercel.app
+  auth_endpoint: /api/auth
 
 # ─── 圖片 ──────────────────────────────────────────
 media_folder: "public/images/uploads"
