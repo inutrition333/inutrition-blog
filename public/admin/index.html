@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>愛營養部落格 — 後台管理</title>
-    <!-- Decap CMS（原 Netlify CMS 的開源繼承者） -->
-    <script src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"
-            integrity="sha384-Ch3bpZcxxjHMuIde+QMTyDdxGqjtafFkpoGgvLjf50nHhptNH7bZyPTyKSkOvEo+"
-            crossorigin="anonymous"></script>
   </head>
   <body>
     <!--
-      Decap CMS 會在這裡自動掛載後台 UI。
+      Decap CMS（原 Netlify CMS 的開源繼承者）會在這裡自動掛載後台 UI。
       設定檔在同目錄的 config.yml。
       使用者登入後可以直接在瀏覽器發文、上傳圖片。
+
+      script 放在 body 結尾：確保 DOM 已經 parse 完畢再初始化 CMS，
+      避免「Cannot read properties of null (reading 'appendChild')」錯誤。
     -->
+    <script src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"></script>
   </body>
 </html>
