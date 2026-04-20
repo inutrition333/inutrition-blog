@@ -94,7 +94,7 @@ PPK 是 **Polypeptide-K** 的縮寫，它是由美國耶魯大學進行的權威
 :::
 
 :::product
-image: /images/wenwen-bangbangtang.jpg
+image: /images/wenwen-bangbangtang.webp
 title: 穩穩棒棒堂 — 花蓮 4 號山苦瓜 + 苦瓜胜肽 PPK
 description: 山苦瓜粉顧廣度、苦瓜胜肽 PPK 顧深度，再搭配桑葉、專利肉桂、斐濟果粉、鉻、鋅、鎂，八種代謝相關成分一次到位。每批送驗、含量公開。
 meepshopUrl: https://www.inutrition.com.tw/products/4c8f3fcc-d1f8-41a5-a9c1-c36b2e97fd17
