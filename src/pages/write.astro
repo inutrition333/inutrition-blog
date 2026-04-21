@@ -1,0 +1,375 @@
+---
+/**
+ * 極簡發文頁 /write
+ *
+ * 給老闆（或任何管理員）用的超簡易發文介面，避開 Decap CMS 複雜的後台。
+ * 流程：輸入密碼 → 填四個必要欄位 → 貼 markdown 內文 → 送出即發布。
+ *
+ * 後端：POST /api/publish（同站 Vercel serverless function）
+ * 驗證：共用密碼（存在 Vercel env var PUBLISH_PASSWORD）
+ *
+ * 這是一個「故意不接全站 Layout」的獨立頁面，避免首頁/文章頁的樣式影響。
+ */
+import { CATEGORIES } from '../content/config';
+---
+
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>快速發文 — 愛營養</title>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="page-head">
+        <h1>快速發文</h1>
+        <p class="hint">適合已經寫好的稿子。送出後約 1 分鐘自動上線。</p>
+      </header>
+
+      <!-- 密碼登入畫面 -->
+      <section id="login" class="card">
+        <label class="field">
+          <span class="label">管理員密碼</span>
+          <input id="password" type="password" autocomplete="current-password" placeholder="請輸入密碼" />
+        </label>
+        <button id="login-btn" class="primary">進入發文</button>
+        <p id="login-err" class="err" hidden></p>
+      </section>
+
+      <!-- 發文表單 -->
+      <section id="form" class="card" hidden>
+        <label class="field">
+          <span class="label">文章標題 <em>*</em></span>
+          <input id="title" type="text" placeholder="例如：桑葉萃取是什麼？" required />
+        </label>
+
+        <div class="row">
+          <label class="field">
+            <span class="label">分類 <em>*</em></span>
+            <select id="category" required>
+              {CATEGORIES.map((c) => <option value={c}>{c}</option>)}
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="label">發布日期</span>
+            <input id="publishDate" type="date" />
+          </label>
+
+          <label class="field narrow">
+            <span class="label">閱讀分鐘</span>
+            <input id="readTime" type="number" min="1" max="30" value="6" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="label">文章摘要 <em>*</em></span>
+          <textarea id="excerpt" rows="2" placeholder="一兩句話，首頁列表會顯示"></textarea>
+        </label>
+
+        <details class="advanced">
+          <summary>顯示進階欄位（可略過）</summary>
+          <label class="field">
+            <span class="label">活動識別碼 campaign</span>
+            <input id="campaign" type="text" placeholder="例如：桑葉萃取_202604" />
+            <span class="sublabel">留空會自動用「主題_年月」格式。用於追蹤產品連結點擊來源。</span>
+          </label>
+          <label class="field">
+            <span class="label">檔名（URL slug）</span>
+            <input id="slug" type="text" placeholder="例如：mulberry-leaf-guide" />
+            <span class="sublabel">英文小寫+連字號。留空會自動產生（日期+隨機碼）。</span>
+          </label>
+          <label class="field">
+            <span class="label">主圖路徑</span>
+            <input id="heroImage" type="text" placeholder="/images/xxx.jpg" />
+            <span class="sublabel">先上傳圖到後台再把路徑貼過來；可留空。</span>
+          </label>
+          <label class="check">
+            <input id="draft" type="checkbox" />
+            存成草稿（不公開、只存在 GitHub）
+          </label>
+        </details>
+
+        <label class="field">
+          <span class="label">文章內文（Markdown） <em>*</em></span>
+          <textarea id="body" rows="18" placeholder="在這裡貼整段 markdown。支援 :::product、:::sunny、:::related 區塊。"></textarea>
+        </label>
+
+        <button id="publish-btn" class="primary">送出發文</button>
+        <p id="publish-msg" class="msg" hidden></p>
+      </section>
+
+      <footer class="foot">
+        <small>若發文失敗，請先把整段內文複製下來保險；再試一次仍失敗就走 <a href="/admin/">完整後台</a>。</small>
+      </footer>
+    </main>
+
+    <style>
+      :root {
+        --bg: #faf7f2;
+        --card: #fff;
+        --text: #2a2a2a;
+        --text-light: #666;
+        --border: #e4ded3;
+        --accent: #4a7c3a;
+        --accent-dark: #3a5f2c;
+        --err: #b94a4a;
+        --ok: #2f7a3a;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', 'PingFang TC', sans-serif;
+        line-height: 1.6;
+      }
+      .shell {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 32px 20px 60px;
+      }
+      .page-head h1 {
+        font-size: 28px;
+        margin: 0 0 6px;
+      }
+      .hint {
+        margin: 0 0 24px;
+        color: var(--text-light);
+        font-size: 14px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 18px;
+      }
+      .field {
+        display: block;
+        margin-bottom: 16px;
+      }
+      .label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .label em {
+        color: var(--err);
+        font-style: normal;
+        margin-left: 2px;
+      }
+      .sublabel {
+        display: block;
+        font-size: 12px;
+        color: var(--text-light);
+        margin-top: 4px;
+      }
+      input[type="text"], input[type="password"], input[type="number"], input[type="date"], select, textarea {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 15px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #fff;
+        font-family: inherit;
+      }
+      textarea {
+        font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        resize: vertical;
+      }
+      input:focus, select:focus, textarea:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: -1px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 0.8fr;
+        gap: 12px;
+      }
+      .row .field { margin-bottom: 16px; }
+      @media (max-width: 560px) {
+        .row { grid-template-columns: 1fr; }
+      }
+      .advanced {
+        border: 1px dashed var(--border);
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-bottom: 16px;
+      }
+      .advanced summary {
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--text-light);
+      }
+      .advanced[open] summary { margin-bottom: 12px; }
+      .check {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 14px;
+        margin-top: 8px;
+      }
+      button.primary {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      button.primary:hover { background: var(--accent-dark); }
+      button.primary:disabled { opacity: 0.5; cursor: wait; }
+      .err { color: var(--err); font-size: 14px; margin: 10px 0 0; }
+      .msg { font-size: 14px; margin: 14px 0 0; padding: 10px 14px; border-radius: 8px; }
+      .msg.ok { background: #eaf5ea; color: var(--ok); border: 1px solid #cde6cd; }
+      .msg.err { background: #fbecec; color: var(--err); border: 1px solid #f1cfcf; }
+      .foot { margin-top: 24px; text-align: center; color: var(--text-light); }
+      .foot a { color: var(--accent-dark); }
+    </style>
+
+    <script is:inline>
+      // 預設日期 = 今天
+      document.getElementById('publishDate').valueAsDate = new Date();
+
+      const STORAGE_KEY = 'inutrition_publish_pw';
+      const loginCard = document.getElementById('login');
+      const formCard = document.getElementById('form');
+      const pwInput = document.getElementById('password');
+      const loginBtn = document.getElementById('login-btn');
+      const loginErr = document.getElementById('login-err');
+
+      // 如果 sessionStorage 有密碼就自動登入（同分頁內有效）
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        pwInput.value = saved;
+        showForm();
+      }
+
+      loginBtn.addEventListener('click', async () => {
+        const pw = pwInput.value.trim();
+        if (!pw) {
+          showLoginErr('請輸入密碼');
+          return;
+        }
+        // 先打一次 /api/publish 只做密碼驗證（ping mode）
+        try {
+          loginBtn.disabled = true;
+          const res = await fetch('/api/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pw, ping: true }),
+          });
+          if (res.status === 401) {
+            showLoginErr('密碼錯誤');
+            loginBtn.disabled = false;
+            return;
+          }
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            showLoginErr(data.error || '登入失敗，請稍後再試');
+            loginBtn.disabled = false;
+            return;
+          }
+          sessionStorage.setItem(STORAGE_KEY, pw);
+          showForm();
+          loginBtn.disabled = false;
+        } catch (e) {
+          showLoginErr('連線失敗：' + e.message);
+          loginBtn.disabled = false;
+        }
+      });
+
+      pwInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') loginBtn.click();
+      });
+
+      function showLoginErr(msg) {
+        loginErr.textContent = msg;
+        loginErr.hidden = false;
+      }
+
+      function showForm() {
+        loginCard.hidden = true;
+        formCard.hidden = false;
+      }
+
+      // ===== 發文 =====
+      const publishBtn = document.getElementById('publish-btn');
+      const publishMsg = document.getElementById('publish-msg');
+
+      publishBtn.addEventListener('click', async () => {
+        publishMsg.hidden = true;
+        publishMsg.className = 'msg';
+
+        const payload = {
+          password: sessionStorage.getItem(STORAGE_KEY) || pwInput.value.trim(),
+          title: document.getElementById('title').value.trim(),
+          category: document.getElementById('category').value,
+          publishDate: document.getElementById('publishDate').value,
+          readTime: parseInt(document.getElementById('readTime').value || '6', 10),
+          excerpt: document.getElementById('excerpt').value.trim(),
+          campaign: document.getElementById('campaign').value.trim(),
+          slug: document.getElementById('slug').value.trim(),
+          heroImage: document.getElementById('heroImage').value.trim(),
+          draft: document.getElementById('draft').checked,
+          body: document.getElementById('body').value,
+        };
+
+        // 前端基本檢查
+        const missing = [];
+        if (!payload.title) missing.push('標題');
+        if (!payload.excerpt) missing.push('摘要');
+        if (!payload.body.trim()) missing.push('內文');
+        if (missing.length) {
+          showMsg('err', '還有必填沒填：' + missing.join('、'));
+          return;
+        }
+
+        try {
+          publishBtn.disabled = true;
+          publishBtn.textContent = '送出中…';
+          const res = await fetch('/api/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            showMsg('err', data.error || `送出失敗（HTTP ${res.status}）`);
+            return;
+          }
+          showMsg(
+            'ok',
+            `已送出 ✅ 約 1 分鐘後自動上線。檔名：${data.path}。你可以關掉這個分頁，或直接寫下一篇。`
+          );
+          // 清空表單（密碼保留）
+          ['title', 'excerpt', 'campaign', 'slug', 'heroImage', 'body'].forEach((id) => {
+            document.getElementById(id).value = '';
+          });
+          document.getElementById('draft').checked = false;
+        } catch (e) {
+          showMsg('err', '連線失敗：' + e.message);
+        } finally {
+          publishBtn.disabled = false;
+          publishBtn.textContent = '送出發文';
+        }
+      });
+
+      function showMsg(type, text) {
+        publishMsg.className = 'msg ' + type;
+        publishMsg.textContent = text;
+        publishMsg.hidden = false;
+        publishMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    </script>
+  </body>
+</html>
