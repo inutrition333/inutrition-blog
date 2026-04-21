@@ -1,15 +1,4 @@
 ---
-/**
- * 極簡發文頁 /write
- *
- * 給老闆（或任何管理員）用的超簡易發文介面，避開 Decap CMS 複雜的後台。
- * 流程：輸入密碼 → 填四個必要欄位 → 貼 markdown 內文 → 送出即發布。
- *
- * 後端：POST /api/publish（同站 Vercel serverless function）
- * 驗證：共用密碼（存在 Vercel env var PUBLISH_PASSWORD）
- *
- * 這是一個「故意不接全站 Layout」的獨立頁面，避免首頁/文章頁的樣式影響。
- */
 import { CATEGORIES } from '../content/config';
 ---
 
@@ -37,6 +26,13 @@ import { CATEGORIES } from '../content/config';
         <button id="login-btn" class="primary">進入發文</button>
         <p id="login-err" class="err" hidden></p>
       </section>
+
+      <!-- 草稿提示橫幅（有未完成草稿才顯示） -->
+      <div id="draft-banner" class="draft-banner" hidden>
+        📝 你有一篇未完成的草稿，是否繼續？
+        <button id="restore-btn" class="inline-btn">繼續上次的草稿</button>
+        <button id="discard-btn" class="inline-btn danger-text">捨棄</button>
+      </div>
 
       <!-- 發文表單 -->
       <section id="form" class="card" hidden>
@@ -74,12 +70,12 @@ import { CATEGORIES } from '../content/config';
           <label class="field">
             <span class="label">活動識別碼 campaign</span>
             <input id="campaign" type="text" placeholder="例如：桑葉萃取_202604" />
-            <span class="sublabel">留空會自動用「主題_年月」格式。用於追蹤產品連結點擊來源。</span>
+            <span class="sublabel">留空會自動用「主題_年月」格式。</span>
           </label>
           <label class="field">
             <span class="label">檔名（URL slug）</span>
             <input id="slug" type="text" placeholder="例如：mulberry-leaf-guide" />
-            <span class="sublabel">英文小寫+連字號。留空會自動產生（日期+隨機碼）。</span>
+            <span class="sublabel">英文小寫+連字號。留空會自動產生。</span>
           </label>
           <label class="field">
             <span class="label">主圖路徑</span>
@@ -97,8 +93,22 @@ import { CATEGORIES } from '../content/config';
           <textarea id="body" rows="18" placeholder="在這裡貼整段 markdown。支援 :::product、:::sunny、:::related 區塊。"></textarea>
         </label>
 
-        <button id="publish-btn" class="primary">送出發文</button>
+        <div class="action-row">
+          <button id="publish-btn" class="primary">送出發文</button>
+        </div>
         <p id="publish-msg" class="msg" hidden></p>
+
+        <!-- 刪除文章 -->
+        <details class="danger-zone">
+          <summary>🗑 刪除已發布的文章</summary>
+          <p class="sublabel" style="margin-bottom:10px;">輸入文章的檔名（slug），例如網址是 <code>/posts/bitter-melon-guide</code> 就填 <code>bitter-melon-guide</code>。</p>
+          <label class="field">
+            <span class="label">文章檔名（slug）</span>
+            <input id="delete-slug" type="text" placeholder="例如：bitter-melon-guide" />
+          </label>
+          <button id="delete-btn" class="danger-btn">確認刪除</button>
+          <p id="delete-msg" class="msg" hidden></p>
+        </details>
       </section>
 
       <footer class="foot">
@@ -117,6 +127,7 @@ import { CATEGORIES } from '../content/config';
         --accent-dark: #3a5f2c;
         --err: #b94a4a;
         --ok: #2f7a3a;
+        --danger: #c0392b;
       }
       * { box-sizing: border-box; }
       body {
@@ -126,20 +137,9 @@ import { CATEGORIES } from '../content/config';
         font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', 'PingFang TC', sans-serif;
         line-height: 1.6;
       }
-      .shell {
-        max-width: 780px;
-        margin: 0 auto;
-        padding: 32px 20px 60px;
-      }
-      .page-head h1 {
-        font-size: 28px;
-        margin: 0 0 6px;
-      }
-      .hint {
-        margin: 0 0 24px;
-        color: var(--text-light);
-        font-size: 14px;
-      }
+      .shell { max-width: 780px; margin: 0 auto; padding: 32px 20px 60px; }
+      .page-head h1 { font-size: 28px; margin: 0 0 6px; }
+      .hint { margin: 0 0 24px; color: var(--text-light); font-size: 14px; }
       .card {
         background: var(--card);
         border: 1px solid var(--border);
@@ -147,27 +147,33 @@ import { CATEGORIES } from '../content/config';
         padding: 24px;
         margin-bottom: 18px;
       }
-      .field {
-        display: block;
-        margin-bottom: 16px;
-      }
-      .label {
-        display: block;
+      .draft-banner {
+        background: #fff8e6;
+        border: 1px solid #f0d080;
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 14px;
         font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
       }
-      .label em {
-        color: var(--err);
-        font-style: normal;
-        margin-left: 2px;
+      .inline-btn {
+        background: none;
+        border: 1px solid currentColor;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 13px;
+        cursor: pointer;
+        font-family: inherit;
+        color: var(--accent-dark);
       }
-      .sublabel {
-        display: block;
-        font-size: 12px;
-        color: var(--text-light);
-        margin-top: 4px;
-      }
+      .danger-text { color: var(--err); }
+      .field { display: block; margin-bottom: 16px; }
+      .label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+      .label em { color: var(--err); font-style: normal; margin-left: 2px; }
+      .sublabel { display: block; font-size: 12px; color: var(--text-light); margin-top: 4px; }
       input[type="text"], input[type="password"], input[type="number"], input[type="date"], select, textarea {
         width: 100%;
         padding: 10px 12px;
@@ -183,38 +189,19 @@ import { CATEGORIES } from '../content/config';
         line-height: 1.6;
         resize: vertical;
       }
-      input:focus, select:focus, textarea:focus {
-        outline: 2px solid var(--accent);
-        outline-offset: -1px;
-      }
-      .row {
-        display: grid;
-        grid-template-columns: 1.4fr 1fr 0.8fr;
-        gap: 12px;
-      }
+      input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+      .row { display: grid; grid-template-columns: 1.4fr 1fr 0.8fr; gap: 12px; }
       .row .field { margin-bottom: 16px; }
-      @media (max-width: 560px) {
-        .row { grid-template-columns: 1fr; }
-      }
+      @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
       .advanced {
         border: 1px dashed var(--border);
         border-radius: 8px;
         padding: 10px 14px;
         margin-bottom: 16px;
       }
-      .advanced summary {
-        cursor: pointer;
-        font-size: 14px;
-        color: var(--text-light);
-      }
+      .advanced summary { cursor: pointer; font-size: 14px; color: var(--text-light); }
       .advanced[open] summary { margin-bottom: 12px; }
-      .check {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        font-size: 14px;
-        margin-top: 8px;
-      }
+      .check { display: flex; gap: 8px; align-items: center; font-size: 14px; margin-top: 8px; }
       button.primary {
         background: var(--accent);
         color: #fff;
@@ -228,39 +215,58 @@ import { CATEGORIES } from '../content/config';
       }
       button.primary:hover { background: var(--accent-dark); }
       button.primary:disabled { opacity: 0.5; cursor: wait; }
+      .action-row { margin-bottom: 4px; }
+      .danger-zone {
+        border: 1px dashed #e0a0a0;
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-top: 20px;
+        background: #fff8f8;
+      }
+      .danger-zone summary { cursor: pointer; font-size: 14px; color: var(--err); }
+      .danger-zone[open] summary { margin-bottom: 10px; }
+      .danger-btn {
+        background: var(--danger);
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .danger-btn:hover { background: #a93226; }
+      .danger-btn:disabled { opacity: 0.5; cursor: wait; }
       .err { color: var(--err); font-size: 14px; margin: 10px 0 0; }
       .msg { font-size: 14px; margin: 14px 0 0; padding: 10px 14px; border-radius: 8px; }
       .msg.ok { background: #eaf5ea; color: var(--ok); border: 1px solid #cde6cd; }
       .msg.err { background: #fbecec; color: var(--err); border: 1px solid #f1cfcf; }
       .foot { margin-top: 24px; text-align: center; color: var(--text-light); }
       .foot a { color: var(--accent-dark); }
+      code { background: #f0ece6; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
     </style>
 
     <script is:inline>
-      // 預設日期 = 今天
       document.getElementById('publishDate').valueAsDate = new Date();
 
-      const STORAGE_KEY = 'inutrition_publish_pw';
-      const loginCard = document.getElementById('login');
-      const formCard = document.getElementById('form');
-      const pwInput = document.getElementById('password');
-      const loginBtn = document.getElementById('login-btn');
-      const loginErr = document.getElementById('login-err');
+      const PW_KEY = 'inutrition_publish_pw';
+      const DRAFT_KEY = 'inutrition_write_draft';
+      const DRAFT_FIELDS = ['title', 'category', 'publishDate', 'readTime', 'excerpt', 'campaign', 'slug', 'heroImage', 'body'];
 
-      // 如果 sessionStorage 有密碼就自動登入（同分頁內有效）
-      const saved = sessionStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        pwInput.value = saved;
-        showForm();
-      }
+      const loginCard = document.getElementById('login');
+      const formCard  = document.getElementById('form');
+      const pwInput   = document.getElementById('password');
+      const loginBtn  = document.getElementById('login-btn');
+      const loginErr  = document.getElementById('login-err');
+      const draftBanner = document.getElementById('draft-banner');
+
+      const saved = sessionStorage.getItem(PW_KEY);
+      if (saved) { pwInput.value = saved; showForm(); }
 
       loginBtn.addEventListener('click', async () => {
         const pw = pwInput.value.trim();
-        if (!pw) {
-          showLoginErr('請輸入密碼');
-          return;
-        }
-        // 先打一次 /api/publish 只做密碼驗證（ping mode）
+        if (!pw) { showLoginErr('請輸入密碼'); return; }
         try {
           loginBtn.disabled = true;
           const res = await fetch('/api/publish', {
@@ -268,39 +274,81 @@ import { CATEGORIES } from '../content/config';
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ password: pw, ping: true }),
           });
-          if (res.status === 401) {
-            showLoginErr('密碼錯誤');
-            loginBtn.disabled = false;
-            return;
-          }
+          if (res.status === 401) { showLoginErr('密碼錯誤'); loginBtn.disabled = false; return; }
           if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            showLoginErr(data.error || '登入失敗，請稍後再試');
-            loginBtn.disabled = false;
-            return;
+            const d = await res.json().catch(() => ({}));
+            showLoginErr(d.error || '登入失敗，請稍後再試');
+            loginBtn.disabled = false; return;
           }
-          sessionStorage.setItem(STORAGE_KEY, pw);
+          sessionStorage.setItem(PW_KEY, pw);
           showForm();
           loginBtn.disabled = false;
-        } catch (e) {
-          showLoginErr('連線失敗：' + e.message);
-          loginBtn.disabled = false;
-        }
+        } catch (e) { showLoginErr('連線失敗：' + e.message); loginBtn.disabled = false; }
       });
 
-      pwInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') loginBtn.click();
-      });
+      pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
 
-      function showLoginErr(msg) {
-        loginErr.textContent = msg;
-        loginErr.hidden = false;
-      }
+      function showLoginErr(msg) { loginErr.textContent = msg; loginErr.hidden = false; }
 
       function showForm() {
         loginCard.hidden = true;
         formCard.hidden = false;
+        checkDraftBanner();
       }
+
+      // ===== localStorage 草稿 =====
+      function saveDraft() {
+        const data = {};
+        DRAFT_FIELDS.forEach((id) => {
+          const el = document.getElementById(id);
+          data[id] = el ? el.value : '';
+        });
+        data.draft = document.getElementById('draft').checked;
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+      }
+
+      function restoreDraft(data) {
+        DRAFT_FIELDS.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el && data[id] !== undefined) el.value = data[id];
+        });
+        document.getElementById('draft').checked = !!data.draft;
+      }
+
+      function clearDraft() { localStorage.removeItem(DRAFT_KEY); }
+
+      function checkDraftBanner() {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return;
+        try {
+          const data = JSON.parse(raw);
+          // 有任何非空欄位才顯示
+          if (DRAFT_FIELDS.some((id) => id !== 'publishDate' && id !== 'readTime' && data[id])) {
+            draftBanner.hidden = false;
+            document.getElementById('restore-btn').onclick = () => {
+              restoreDraft(data);
+              draftBanner.hidden = true;
+            };
+            document.getElementById('discard-btn').onclick = () => {
+              clearDraft();
+              draftBanner.hidden = true;
+            };
+          }
+        } catch (_) {}
+      }
+
+      // 自動儲存：throttled，每 3 秒最多儲存一次
+      let saveTimer = null;
+      function scheduleSave() {
+        if (saveTimer) return;
+        saveTimer = setTimeout(() => { saveDraft(); saveTimer = null; }, 3000);
+      }
+
+      DRAFT_FIELDS.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', scheduleSave);
+      });
+      document.getElementById('draft').addEventListener('change', scheduleSave);
 
       // ===== 發文 =====
       const publishBtn = document.getElementById('publish-btn');
@@ -311,28 +359,24 @@ import { CATEGORIES } from '../content/config';
         publishMsg.className = 'msg';
 
         const payload = {
-          password: sessionStorage.getItem(STORAGE_KEY) || pwInput.value.trim(),
-          title: document.getElementById('title').value.trim(),
-          category: document.getElementById('category').value,
+          password: sessionStorage.getItem(PW_KEY) || pwInput.value.trim(),
+          title:       document.getElementById('title').value.trim(),
+          category:    document.getElementById('category').value,
           publishDate: document.getElementById('publishDate').value,
-          readTime: parseInt(document.getElementById('readTime').value || '6', 10),
-          excerpt: document.getElementById('excerpt').value.trim(),
-          campaign: document.getElementById('campaign').value.trim(),
-          slug: document.getElementById('slug').value.trim(),
-          heroImage: document.getElementById('heroImage').value.trim(),
-          draft: document.getElementById('draft').checked,
-          body: document.getElementById('body').value,
+          readTime:    parseInt(document.getElementById('readTime').value || '6', 10),
+          excerpt:     document.getElementById('excerpt').value.trim(),
+          campaign:    document.getElementById('campaign').value.trim(),
+          slug:        document.getElementById('slug').value.trim(),
+          heroImage:   document.getElementById('heroImage').value.trim(),
+          draft:       document.getElementById('draft').checked,
+          body:        document.getElementById('body').value,
         };
 
-        // 前端基本檢查
         const missing = [];
         if (!payload.title) missing.push('標題');
         if (!payload.excerpt) missing.push('摘要');
         if (!payload.body.trim()) missing.push('內文');
-        if (missing.length) {
-          showMsg('err', '還有必填沒填：' + missing.join('、'));
-          return;
-        }
+        if (missing.length) { showMsg('err', '還有必填沒填：' + missing.join('、')); return; }
 
         try {
           publishBtn.disabled = true;
@@ -343,19 +387,14 @@ import { CATEGORIES } from '../content/config';
             body: JSON.stringify(payload),
           });
           const data = await res.json().catch(() => ({}));
-          if (!res.ok) {
-            showMsg('err', data.error || `送出失敗（HTTP ${res.status}）`);
-            return;
-          }
-          showMsg(
-            'ok',
-            `已送出 ✅ 約 1 分鐘後自動上線。檔名：${data.path}。你可以關掉這個分頁，或直接寫下一篇。`
-          );
-          // 清空表單（密碼保留）
+          if (!res.ok) { showMsg('err', data.error || `送出失敗（HTTP ${res.status}）`); return; }
+          showMsg('ok', `已送出 ✅ 約 1 分鐘後自動上線。檔名：${data.path}。`);
           ['title', 'excerpt', 'campaign', 'slug', 'heroImage', 'body'].forEach((id) => {
             document.getElementById(id).value = '';
           });
           document.getElementById('draft').checked = false;
+          clearDraft();
+          draftBanner.hidden = true;
         } catch (e) {
           showMsg('err', '連線失敗：' + e.message);
         } finally {
@@ -369,6 +408,44 @@ import { CATEGORIES } from '../content/config';
         publishMsg.textContent = text;
         publishMsg.hidden = false;
         publishMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      // ===== 刪除文章 =====
+      const deleteBtn = document.getElementById('delete-btn');
+      const deleteMsg = document.getElementById('delete-msg');
+
+      deleteBtn.addEventListener('click', async () => {
+        const slug = document.getElementById('delete-slug').value.trim();
+        if (!slug) { showDeleteMsg('err', '請填入要刪除的文章檔名'); return; }
+        if (!confirm(`確定要刪除「${slug}」這篇文章嗎？這個動作無法復原。`)) return;
+
+        try {
+          deleteBtn.disabled = true;
+          deleteBtn.textContent = '刪除中…';
+          const res = await fetch('/api/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              password: sessionStorage.getItem(PW_KEY) || '',
+              slug,
+            }),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) { showDeleteMsg('err', data.error || `刪除失敗（HTTP ${res.status}）`); return; }
+          showDeleteMsg('ok', `「${slug}」已刪除 ✅ 約 1 分鐘後從網站消失。`);
+          document.getElementById('delete-slug').value = '';
+        } catch (e) {
+          showDeleteMsg('err', '連線失敗：' + e.message);
+        } finally {
+          deleteBtn.disabled = false;
+          deleteBtn.textContent = '確認刪除';
+        }
+      });
+
+      function showDeleteMsg(type, text) {
+        deleteMsg.className = 'msg ' + type;
+        deleteMsg.textContent = text;
+        deleteMsg.hidden = false;
       }
     </script>
   </body>
