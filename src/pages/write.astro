@@ -660,11 +660,11 @@ import { CATEGORIES } from '../content/config';
       function renderPreview() {
         const raw = document.getElementById('body').value;
         if (!raw.trim()) {
-          previewPane.innerHTML = '<p style="color:#aaa;text-align:center;padding:48px 0;font-size:15px;">還沒有內文，切回編輯貼上 markdown 後再預覽。</p>';
+          previewPane.innerHTML = '<p style="color:#aaa;text-align:center;padding:48px 0;font-size:15px;">還沒有內文，貼上 markdown 後這裡會自動顯示。</p>';
           return;
         }
         if (typeof marked === 'undefined') {
-          previewPane.innerHTML = '<p style="color:#aaa">預覽功能載入中，請稍後再點一次預覽。</p>';
+          setTimeout(renderPreview, 300);
           return;
         }
         previewPane.innerHTML = marked.parse(preprocessBlocks(raw));
