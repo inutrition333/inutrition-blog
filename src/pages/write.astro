@@ -261,6 +261,16 @@ import { CATEGORIES } from '../content/config';
       const loginErr  = document.getElementById('login-err');
       const draftBanner = document.getElementById('draft-banner');
 
+      // 草稿按鈕先在頁面載入時就綁好，不依賴 checkDraftBanner 的執行時機
+      let pendingDraftData = null;
+      document.getElementById('restore-btn').addEventListener('click', () => {
+        if (pendingDraftData) { restoreDraft(pendingDraftData); pendingDraftData = null; }
+        draftBanner.hidden = true;
+      });
+      document.getElementById('discard-btn').addEventListener('click', () => {
+        clearDraft(); pendingDraftData = null; draftBanner.hidden = true;
+      });
+
       const saved = sessionStorage.getItem(PW_KEY);
       if (saved) { pwInput.value = saved; showForm(); }
 
@@ -322,17 +332,9 @@ import { CATEGORIES } from '../content/config';
         if (!raw) return;
         try {
           const data = JSON.parse(raw);
-          // 有任何非空欄位才顯示
           if (DRAFT_FIELDS.some((id) => id !== 'publishDate' && id !== 'readTime' && data[id])) {
+            pendingDraftData = data;
             draftBanner.hidden = false;
-            document.getElementById('restore-btn').onclick = () => {
-              restoreDraft(data);
-              draftBanner.hidden = true;
-            };
-            document.getElementById('discard-btn').onclick = () => {
-              clearDraft();
-              draftBanner.hidden = true;
-            };
           }
         } catch (_) {}
       }
