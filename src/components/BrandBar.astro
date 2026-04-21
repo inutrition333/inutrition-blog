@@ -5,24 +5,10 @@
  * 點擊連回 MeepShop 官網，帶 utm_source=blog & utm_medium=header。
  * campaign 從 props 帶（首頁可以給固定值，文章頁帶該文 frontmatter.campaign）。
  */
-import { buildUtmUrl } from '../lib/utm';
-
-export interface Props {
-  /** UTM campaign 識別碼，文章頁傳該文 campaign，首頁可傳 'site_home' */
-  campaign?: string;
-}
-
-const { campaign = 'site_home' } = Astro.props;
-
-const homeUrl = buildUtmUrl({
-  baseUrl: 'https://www.inutrition.com.tw/',
-  medium: 'header',
-  campaign,
-});
 ---
 
 <header class="brand-bar">
-  <a href={homeUrl} target="_top" rel="noopener">
+  <a href="/">
     愛營養 iNutrition
     <span>NUTRITION FOR LIFE</span>
   </a>
