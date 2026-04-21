@@ -88,10 +88,19 @@ import { CATEGORIES } from '../content/config';
           </label>
         </details>
 
-        <label class="field">
-          <span class="label">文章內文（Markdown） <em>*</em></span>
-          <textarea id="body" rows="18" placeholder="在這裡貼整段 markdown。支援 :::product、:::sunny、:::related 區塊。"></textarea>
-        </label>
+        <div class="body-section">
+          <div class="tab-bar">
+            <button type="button" id="tab-edit" class="tab tab-active">✏️ 編輯</button>
+            <button type="button" id="tab-preview" class="tab">👁 預覽</button>
+          </div>
+          <div id="edit-pane">
+            <label class="field" style="margin-bottom:0">
+              <span class="label">文章內文（Markdown） <em>*</em></span>
+              <textarea id="body" rows="18" placeholder="在這裡貼整段 markdown。支援 :::product、:::sunny、:::related 區塊。"></textarea>
+            </label>
+          </div>
+          <div id="preview-pane" class="preview-pane" hidden></div>
+        </div>
 
         <div class="action-row">
           <button id="publish-btn" class="primary">送出發文</button>
@@ -245,8 +254,98 @@ import { CATEGORIES } from '../content/config';
       .foot { margin-top: 24px; text-align: center; color: var(--text-light); }
       .foot a { color: var(--accent-dark); }
       code { background: #f0ece6; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+
+      /* ===== 預覽 tab ===== */
+      .body-section { margin-bottom: 16px; }
+      .tab-bar { display: flex; gap: 2px; }
+      .tab {
+        background: #f0ece6; border: 1px solid var(--border); border-bottom: none;
+        padding: 8px 18px; font-size: 14px; cursor: pointer;
+        border-radius: 8px 8px 0 0; font-family: inherit; color: var(--text-light);
+      }
+      .tab-active { background: #fff; color: var(--text); font-weight: 600; }
+      #edit-pane textarea {
+        border-radius: 0 8px 8px 8px;
+      }
+      .preview-pane {
+        border: 1px solid var(--border); border-radius: 0 8px 8px 8px;
+        min-height: 340px; padding: 28px 32px;
+        background: #fff; overflow-y: auto;
+        font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', 'PingFang TC', sans-serif;
+        font-size: 17px; line-height: 2.0; color: #2E2820;
+      }
+      .preview-pane p { margin-bottom: 20px; }
+      .preview-pane h2 {
+        font-size: 22px; font-weight: 700; color: #2E2820;
+        margin-top: 48px; margin-bottom: 18px;
+        padding-left: 14px; border-left: 4px solid #5E8A50; line-height: 1.5;
+      }
+      .preview-pane h2:first-child { margin-top: 0; }
+      .preview-pane h3 {
+        font-size: 18px; font-weight: 700; color: #B07D4F;
+        margin-top: 36px; margin-bottom: 14px;
+      }
+      .preview-pane strong { font-weight: 700; }
+      .preview-pane a { color: #4A7340; text-underline-offset: 3px; }
+      .preview-pane ul, .preview-pane ol { padding-left: 24px; margin-bottom: 20px; }
+      .preview-pane li { margin-bottom: 6px; }
+      /* sunny-note */
+      .preview-pane .sunny-note {
+        background: #E6EFE3; border-radius: 14px;
+        padding: 22px 22px 22px 62px; margin: 32px 0;
+        position: relative; font-size: 16px;
+      }
+      .preview-pane .sunny-note::before {
+        content: '🌿'; position: absolute; left: 18px; top: 20px; font-size: 26px;
+      }
+      .preview-pane .note-title {
+        font-weight: 700; color: #4A7340; margin-bottom: 8px; font-size: 15px;
+      }
+      .preview-pane .sunny-note p { margin-bottom: 8px; }
+      .preview-pane .sunny-note p:last-child { margin-bottom: 0; }
+      /* product card */
+      .preview-pane .product-card {
+        background: #fff; border-radius: 14px;
+        box-shadow: 0 2px 18px rgba(46,40,32,0.08);
+        margin: 36px 0; overflow: hidden;
+      }
+      .preview-pane .product-card-inner { display: flex; align-items: stretch; }
+      .preview-pane .product-card-image {
+        flex: 0 0 160px; min-height: 160px;
+        background: linear-gradient(135deg, #E6EFE3, #EDDCC8);
+        display: flex; align-items: center; justify-content: center; overflow: hidden;
+      }
+      .preview-pane .product-card-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .preview-pane .product-card-content { flex: 1; padding: 20px 24px; display: flex; flex-direction: column; }
+      .preview-pane .product-card-tag {
+        display: inline-block; font-size: 11px; font-weight: 700;
+        color: #4A7340; background: #E6EFE3;
+        padding: 3px 10px; border-radius: 4px; margin-bottom: 8px; align-self: flex-start;
+      }
+      .preview-pane .product-card-content h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: #2E2820; }
+      .preview-pane .product-card-content p { font-size: 14px; color: #5C5347; margin-bottom: 12px; line-height: 1.7; flex: 1; }
+      .preview-pane .product-card-cta {
+        display: inline-block; background: #3D6233; color: #fff !important;
+        padding: 10px 22px; border-radius: 8px; text-decoration: none !important;
+        font-size: 14px; font-weight: 700; align-self: flex-start;
+      }
+      /* related link */
+      .preview-pane .related-link {
+        display: block; background: #F5EFDF; border-radius: 10px;
+        padding: 16px 20px; margin: 24px 0; text-decoration: none !important;
+      }
+      .preview-pane .related-label {
+        display: block; font-size: 11px; color: #B07D4F;
+        font-weight: 700; margin-bottom: 4px; letter-spacing: 1px;
+      }
+      .preview-pane .related-title {
+        font-size: 15px; font-weight: 500; color: #4A7340;
+        display: flex; justify-content: space-between; align-items: center;
+      }
+      .preview-pane .related-title::after { content: '→'; }
     </style>
 
+    <script src="https://unpkg.com/marked/marked.min.js"></script>
     <script is:inline>
       document.getElementById('publishDate').valueAsDate = new Date();
 
@@ -448,6 +547,77 @@ import { CATEGORIES } from '../content/config';
         deleteMsg.className = 'msg ' + type;
         deleteMsg.textContent = text;
         deleteMsg.hidden = false;
+      }
+
+      // ===== 即時預覽 =====
+      const tabEdit    = document.getElementById('tab-edit');
+      const tabPreview = document.getElementById('tab-preview');
+      const editPane   = document.getElementById('edit-pane');
+      const previewPane = document.getElementById('preview-pane');
+
+      tabEdit.addEventListener('click', () => {
+        editPane.hidden = false;
+        previewPane.hidden = true;
+        tabEdit.classList.add('tab-active');
+        tabPreview.classList.remove('tab-active');
+      });
+
+      tabPreview.addEventListener('click', () => {
+        editPane.hidden = true;
+        previewPane.hidden = false;
+        tabEdit.classList.remove('tab-active');
+        tabPreview.classList.add('tab-active');
+        renderPreview();
+      });
+
+      function preprocessBlocks(md) {
+        // :::sunny
+        md = md.replace(/:::sunny\n([\s\S]*?):::/g, (_, content) => {
+          const paras = content.trim().split(/\n\n+/).map(p =>
+            '<p>' + p.trim().replace(/\n/g, '<br>') + '</p>'
+          ).join('');
+          return `<div class="sunny-note"><div class="note-title">Sunny 營養師的小叮嚀</div>${paras}</div>`;
+        });
+        // :::product
+        md = md.replace(/:::product\n([\s\S]*?):::/g, (_, content) => {
+          const props = {};
+          content.split('\n').forEach(line => {
+            const m = line.match(/^(\w+):\s*(.+)$/);
+            if (m) props[m[1]] = m[2].trim();
+          });
+          const img = props.image
+            ? `<img src="${props.image}" alt="${props.title || ''}">`
+            : '';
+          return `<div class="product-card"><div class="product-card-inner">` +
+            `<div class="product-card-image">${img}</div>` +
+            `<div class="product-card-content">` +
+            `<span class="product-card-tag">Sunny 營養師自家開發</span>` +
+            `<h4>${props.title || ''}</h4>` +
+            `<p>${props.description || ''}</p>` +
+            `<a class="product-card-cta" href="#">看看價格與組合 →</a>` +
+            `</div></div></div>`;
+        });
+        // :::related
+        md = md.replace(/:::related\{slug=([^}]+)\}\n([\s\S]*?):::/g, (_, slug, content) => {
+          const title = content.trim();
+          return `<a class="related-link" href="/posts/${slug}">` +
+            `<span class="related-label">延伸閱讀</span>` +
+            `<span class="related-title">${title}</span></a>`;
+        });
+        return md;
+      }
+
+      function renderPreview() {
+        const raw = document.getElementById('body').value;
+        if (!raw.trim()) {
+          previewPane.innerHTML = '<p style="color:#aaa;text-align:center;padding:48px 0;font-size:15px;">還沒有內文，切回編輯貼上 markdown 後再預覽。</p>';
+          return;
+        }
+        if (typeof marked === 'undefined') {
+          previewPane.innerHTML = '<p style="color:#aaa">預覽功能載入中，請稍後再點一次預覽。</p>';
+          return;
+        }
+        previewPane.innerHTML = marked.parse(preprocessBlocks(raw));
       }
     </script>
   </body>
