@@ -436,7 +436,7 @@ import { CATEGORIES } from '../content/config';
       function showForm() {
         loginCard.hidden = true;
         formCard.hidden = false;
-        checkDraftBanner();
+        clearDraft();
         // 桌面版：初始渲染一次預覽
         if (window.matchMedia('(min-width: 700px)').matches) {
           renderPreview();
