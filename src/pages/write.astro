@@ -399,10 +399,10 @@ import { CATEGORIES } from '../content/config';
       let pendingDraftData = null;
       document.getElementById('restore-btn').addEventListener('click', () => {
         if (pendingDraftData) { restoreDraft(pendingDraftData); pendingDraftData = null; }
-        draftBanner.hidden = true;
+        draftBanner.style.display = 'none';
       });
       document.getElementById('discard-btn').addEventListener('click', () => {
-        clearDraft(); pendingDraftData = null; draftBanner.hidden = true;
+        clearDraft(); pendingDraftData = null; draftBanner.style.display = 'none';
       });
 
       const saved = sessionStorage.getItem(PW_KEY);
@@ -472,7 +472,7 @@ import { CATEGORIES } from '../content/config';
           const data = JSON.parse(raw);
           if (['title', 'excerpt', 'body'].some((id) => data[id] && data[id].trim())) {
             pendingDraftData = data;
-            draftBanner.hidden = false;
+            draftBanner.style.display = 'flex';
           } else {
             clearDraft();
           }
@@ -536,7 +536,7 @@ import { CATEGORIES } from '../content/config';
           });
           document.getElementById('draft').checked = false;
           clearDraft();
-          draftBanner.hidden = true;
+          draftBanner.style.display = 'none';
         } catch (e) {
           showMsg('err', '連線失敗：' + e.message);
         } finally {
