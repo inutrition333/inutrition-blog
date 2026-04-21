@@ -5,16 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>愛營養部落格 — 後台管理</title>
+    <script>window.CMS_MANUAL_INIT = true;</script>
   </head>
   <body>
-    <!--
-      Decap CMS（原 Netlify CMS 的開源繼承者）會在這裡自動掛載後台 UI。
-      設定檔在同目錄的 config.yml。
-      使用者登入後可以直接在瀏覽器發文、上傳圖片。
-
-      script 放在 body 結尾：確保 DOM 已經 parse 完畢再初始化 CMS，
-      避免「Cannot read properties of null (reading 'appendChild')」錯誤。
-    -->
     <script src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"></script>
+    <script>
+      CMS.init({
+        config: {
+          backend: {
+            name: 'github',
+            repo: 'inutrition333/inutrition-blog',
+            branch: 'main',
+            base_url: 'https://inutrition-blog.vercel.app',
+            auth_endpoint: '/api/auth'
+          },
+          media_folder: 'public/images/uploads',
+          public_folder: '/images/uploads',
+          locale: 'zh_Hant',
+          collections: [{
+            name: 'posts',
+            label: '部落格文章',
+            folder: 'src/content/posts',
+            create: true,
+            slug: '{{slug}}',
+            preview_path: 'posts/{{slug}}',
+            extension: 'md',
+            format: 'frontmatter',
+            fields: [
+              { label: '文章標題', name: 'title', widget: 'string', hint: '例如：苦瓜胜肽跟山苦瓜粉差在哪裡？' },
+              {
+                label: '分類', name: 'category', widget: 'select',
+                options: ['體態管理','腸胃保健','代謝循環','美容養顏','睡眠放鬆','銀髮族保養']
+              },
+              { label: '發布日期', name: 'publishDate', widget: 'datetime', date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' },
+              { label: '閱讀時間（分鐘）', name: 'readTime', widget: 'number', default: 5, value_type: 'int', min: 1, max: 30 },
+              { label: '主圖（選填）', name: 'heroImage', widget: 'image', required: false, hint: '建議 1200px 寬、JPG 或 WebP、< 500KB' },
+              { label: '文章摘要', name: 'excerpt', widget: 'text', hint: '首頁列表顯示的 1-2 句話' },
+              { label: '活動識別碼', name: 'campaign', widget: 'string', required: false, hint: '例如：苦瓜胜肽_202604' },
+              { label: '精選文章？', name: 'featured', widget: 'boolean', default: false },
+              { label: '草稿？', name: 'draft', widget: 'boolean', default: false },
+              { label: '文章內文', name: 'body', widget: 'markdown' }
+            ]
+          }]
+        }
+      });
+    </script>
   </body>
 </html>
