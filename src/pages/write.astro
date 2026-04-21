@@ -102,7 +102,7 @@ import { CATEGORIES } from '../content/config';
               </label>
             </div>
           </div>
-          <div id="preview-col" hidden>
+          <div id="preview-col">
             <span class="pane-label">👁 預覽</span>
             <div id="preview-pane" class="preview-pane"></div>
           </div>
@@ -351,6 +351,12 @@ import { CATEGORIES } from '../content/config';
       .preview-pane .related-title::after { content: '→'; }
 
       /* ===== 桌面分割預覽 ===== */
+      /* 手機版：預覽欄預設隱藏，改用 JS 切換 class */
+      @media (max-width: 699px) {
+        #preview-col { display: none; }
+        #preview-col.mobile-show { display: block; }
+        .pane-label { display: none; }
+      }
       @media (min-width: 700px) {
         .shell { max-width: 1200px; }
         .tab-bar { display: none; }
@@ -360,23 +366,10 @@ import { CATEGORIES } from '../content/config';
           align-items: flex-start;
           margin-bottom: 16px;
         }
-        #edit-col {
-          flex: 1;
-          min-width: 0;
-        }
-        #preview-col {
-          flex: 1;
-          min-width: 0;
-          display: block !important;
-        }
-        #edit-pane textarea {
-          border-radius: 8px;
-          min-height: 480px;
-        }
-        .preview-pane {
-          min-height: 480px;
-          border-radius: 8px;
-        }
+        #edit-col { flex: 1; min-width: 0; }
+        #preview-col { flex: 1; min-width: 0; }
+        #edit-pane textarea { border-radius: 8px; min-height: 480px; }
+        .preview-pane { min-height: 480px; border-radius: 8px; }
         .pane-label {
           display: block;
           font-size: 13px;
@@ -384,9 +377,6 @@ import { CATEGORIES } from '../content/config';
           color: var(--text-light);
           margin-bottom: 6px;
         }
-      }
-      @media (max-width: 699px) {
-        .pane-label { display: none; }
       }
     </style>
 
@@ -448,9 +438,8 @@ import { CATEGORIES } from '../content/config';
         loginCard.hidden = true;
         formCard.hidden = false;
         checkDraftBanner();
-        // 桌面版：讓 preview-col 隨 CSS 分割顯示，初始渲染一次
+        // 桌面版：初始渲染一次預覽
         if (window.matchMedia('(min-width: 700px)').matches) {
-          document.getElementById('preview-col').removeAttribute('hidden');
           renderPreview();
         }
       }
@@ -608,17 +597,17 @@ import { CATEGORIES } from '../content/config';
       const previewCol = document.getElementById('preview-col');
       const previewPane = document.getElementById('preview-pane');
 
-      // 手機版 tab 切換
+      // 手機版 tab 切換（用 class 不用 hidden attribute）
       tabEdit.addEventListener('click', () => {
-        editCol.hidden = false;
-        previewCol.hidden = true;
+        editCol.style.display = '';
+        previewCol.classList.remove('mobile-show');
         tabEdit.classList.add('tab-active');
         tabPreview.classList.remove('tab-active');
       });
 
       tabPreview.addEventListener('click', () => {
-        editCol.hidden = true;
-        previewCol.hidden = false;
+        editCol.style.display = 'none';
+        previewCol.classList.add('mobile-show');
         tabEdit.classList.remove('tab-active');
         tabPreview.classList.add('tab-active');
         renderPreview();
