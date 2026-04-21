@@ -9,7 +9,6 @@ import { CATEGORIES } from '../content/config';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>快速發文 — 愛營養</title>
-    <script is:inline src="/marked.min.js"></script>
   </head>
   <body>
     <main class="shell">
@@ -663,11 +662,32 @@ import { CATEGORIES } from '../content/config';
           previewPane.innerHTML = '<p style="color:#aaa;text-align:center;padding:48px 0;font-size:15px;">還沒有內文，貼上 markdown 後這裡會自動顯示。</p>';
           return;
         }
-        if (typeof marked === 'undefined') {
-          setTimeout(renderPreview, 300);
-          return;
-        }
-        previewPane.innerHTML = marked.parse(preprocessBlocks(raw));
+        previewPane.innerHTML = simpleMarkdown(preprocessBlocks(raw));
+      }
+
+      function simpleMarkdown(text) {
+        const blocks = text.split(/\n{2,}/);
+        return blocks.map(block => {
+          block = block.trim();
+          if (!block) return '';
+          if (block.startsWith('<')) return block;
+          if (block.startsWith('## ')) return '<h2>' + inlineMd(block.slice(3).trim()) + '</h2>';
+          if (block.startsWith('### ')) return '<h3>' + inlineMd(block.slice(4).trim()) + '</h3>';
+          if (/^- /.test(block)) {
+            const items = block.split('\n')
+              .map(l => l.trim()).filter(l => l.startsWith('- '))
+              .map(l => '<li>' + inlineMd(l.slice(2)) + '</li>').join('');
+            return '<ul>' + items + '</ul>';
+          }
+          const para = block.split('\n').map(l => inlineMd(l.trim())).filter(Boolean).join(' ');
+          return '<p>' + para + '</p>';
+        }).filter(Boolean).join('\n');
+      }
+
+      function inlineMd(text) {
+        text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
+        return text;
       }
     </script>
   </body>
