@@ -93,13 +93,19 @@ import { CATEGORIES } from '../content/config';
             <button type="button" id="tab-edit" class="tab tab-active">✏️ 編輯</button>
             <button type="button" id="tab-preview" class="tab">👁 預覽</button>
           </div>
-          <div id="edit-pane">
-            <label class="field" style="margin-bottom:0">
-              <span class="label">文章內文（Markdown） <em>*</em></span>
-              <textarea id="body" rows="18" placeholder="在這裡貼整段 markdown。支援 :::product、:::sunny、:::related 區塊。"></textarea>
-            </label>
+          <div id="edit-col">
+            <span class="pane-label">✏️ 編輯</span>
+            <div id="edit-pane">
+              <label class="field" style="margin-bottom:0">
+                <span class="label">文章內文（Markdown） <em>*</em></span>
+                <textarea id="body" rows="18" placeholder="在這裡貼整段 markdown。支援 :::product、:::sunny、:::related 區塊。"></textarea>
+              </label>
+            </div>
           </div>
-          <div id="preview-pane" class="preview-pane" hidden></div>
+          <div id="preview-col" hidden>
+            <span class="pane-label">👁 預覽</span>
+            <div id="preview-pane" class="preview-pane"></div>
+          </div>
         </div>
 
         <div class="action-row">
@@ -146,7 +152,7 @@ import { CATEGORIES } from '../content/config';
         font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans TC', 'PingFang TC', sans-serif;
         line-height: 1.6;
       }
-      .shell { max-width: 780px; margin: 0 auto; padding: 32px 20px 60px; }
+      .shell { max-width: 820px; margin: 0 auto; padding: 32px 20px 60px; }
       .page-head h1 { font-size: 28px; margin: 0 0 6px; }
       .hint { margin: 0 0 24px; color: var(--text-light); font-size: 14px; }
       .card {
@@ -343,6 +349,45 @@ import { CATEGORIES } from '../content/config';
         display: flex; justify-content: space-between; align-items: center;
       }
       .preview-pane .related-title::after { content: '→'; }
+
+      /* ===== 桌面分割預覽 ===== */
+      @media (min-width: 700px) {
+        .shell { max-width: 1200px; }
+        .tab-bar { display: none; }
+        .body-section {
+          display: flex;
+          gap: 20px;
+          align-items: flex-start;
+          margin-bottom: 16px;
+        }
+        #edit-col {
+          flex: 1;
+          min-width: 0;
+        }
+        #preview-col {
+          flex: 1;
+          min-width: 0;
+          display: block !important;
+        }
+        #edit-pane textarea {
+          border-radius: 8px;
+          min-height: 480px;
+        }
+        .preview-pane {
+          min-height: 480px;
+          border-radius: 8px;
+        }
+        .pane-label {
+          display: block;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text-light);
+          margin-bottom: 6px;
+        }
+      }
+      @media (max-width: 699px) {
+        .pane-label { display: none; }
+      }
     </style>
 
     <script src="https://unpkg.com/marked/marked.min.js"></script>
@@ -403,6 +448,11 @@ import { CATEGORIES } from '../content/config';
         loginCard.hidden = true;
         formCard.hidden = false;
         checkDraftBanner();
+        // 桌面版：讓 preview-col 隨 CSS 分割顯示，初始渲染一次
+        if (window.matchMedia('(min-width: 700px)').matches) {
+          document.getElementById('preview-col').removeAttribute('hidden');
+          renderPreview();
+        }
       }
 
       // ===== localStorage 草稿 =====
@@ -431,11 +481,13 @@ import { CATEGORIES } from '../content/config';
         if (!raw) return;
         try {
           const data = JSON.parse(raw);
-          if (DRAFT_FIELDS.some((id) => id !== 'publishDate' && id !== 'readTime' && data[id])) {
+          if (['title', 'excerpt', 'body'].some((id) => data[id] && data[id].trim())) {
             pendingDraftData = data;
             draftBanner.hidden = false;
+          } else {
+            clearDraft();
           }
-        } catch (_) {}
+        } catch (_) { clearDraft(); }
       }
 
       // 自動儲存：throttled，每 3 秒最多儲存一次
@@ -552,22 +604,31 @@ import { CATEGORIES } from '../content/config';
       // ===== 即時預覽 =====
       const tabEdit    = document.getElementById('tab-edit');
       const tabPreview = document.getElementById('tab-preview');
-      const editPane   = document.getElementById('edit-pane');
+      const editCol    = document.getElementById('edit-col');
+      const previewCol = document.getElementById('preview-col');
       const previewPane = document.getElementById('preview-pane');
 
+      // 手機版 tab 切換
       tabEdit.addEventListener('click', () => {
-        editPane.hidden = false;
-        previewPane.hidden = true;
+        editCol.hidden = false;
+        previewCol.hidden = true;
         tabEdit.classList.add('tab-active');
         tabPreview.classList.remove('tab-active');
       });
 
       tabPreview.addEventListener('click', () => {
-        editPane.hidden = true;
-        previewPane.hidden = false;
+        editCol.hidden = true;
+        previewCol.hidden = false;
         tabEdit.classList.remove('tab-active');
         tabPreview.classList.add('tab-active');
         renderPreview();
+      });
+
+      // 即時預覽：輸入後 400ms debounce
+      let previewTimer = null;
+      document.getElementById('body').addEventListener('input', () => {
+        clearTimeout(previewTimer);
+        previewTimer = setTimeout(renderPreview, 400);
       });
 
       function preprocessBlocks(md) {
