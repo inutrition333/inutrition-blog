@@ -76,8 +76,7 @@ export default async function handler(req, res) {
       body: JSON.stringify(uploadBody),
     });
     if (!upRes.ok) {
-      const errText = await upRes.text().catch(() => '');
-      res.status(500).json({ error: `上傳失敗（${upRes.status}）：${errText.slice(0, 200)}` });
+      res.status(500).json({ error: '上傳失敗，請稍後再試或聯絡管理員' });
       return;
     }
     res.status(200).json({ ok: true, path: `/images/uploads/${safeName}` });

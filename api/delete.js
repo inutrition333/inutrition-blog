@@ -71,8 +71,7 @@ export default async function handler(req, res) {
       }),
     });
     if (!delRes.ok) {
-      const errText = await delRes.text().catch(() => '');
-      res.status(500).json({ error: `刪除失敗（${delRes.status}）：${errText.slice(0, 200)}` });
+      res.status(500).json({ error: '刪除失敗，請稍後再試或聯絡管理員' });
       return;
     }
     res.status(200).json({ ok: true, path });

@@ -127,10 +127,7 @@ export default async function handler(req, res) {
       return;
     }
     if (!ghRes.ok) {
-      const errText = await ghRes.text().catch(() => '');
-      res.status(500).json({
-        error: `GitHub 回應錯誤（${ghRes.status}）：${errText.slice(0, 200)}`,
-      });
+      res.status(500).json({ error: '發文失敗，請稍後再試或聯絡管理員' });
       return;
     }
     const data = await ghRes.json();
