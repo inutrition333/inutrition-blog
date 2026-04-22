@@ -437,10 +437,8 @@ import { CATEGORIES } from '../content/config';
         loginCard.hidden = true;
         formCard.hidden = false;
         clearDraft();
-        // 桌面版：初始渲染一次預覽
-        if (window.matchMedia('(min-width: 700px)').matches) {
-          renderPreview();
-        }
+        // 桌面版：初始渲染一次預覽（rAF 確保 DOM 顯示後才執行）
+        requestAnimationFrame(renderPreview);
       }
 
       // ===== localStorage 草稿 =====
