@@ -27,6 +27,36 @@ export interface Props {
 
 const { post, tocItems, relatedPosts } = Astro.props;
 const { title, category, publishDate, readTime, excerpt, heroImage, campaign } = post.data;
+
+const siteUrl = Astro.site?.toString() ?? 'https://blog.inutrition.com.tw';
+const postUrl = new URL(`/posts/${post.slug}`, siteUrl).toString();
+const postSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: excerpt,
+  url: postUrl,
+  datePublished: publishDate,
+  dateModified: publishDate,
+  image: heroImage ? new URL(heroImage, siteUrl).toString() : new URL('/og-default.jpg', siteUrl).toString(),
+  inLanguage: 'zh-TW',
+  author: {
+    '@type': 'Person',
+    name: 'Sunny 營養師',
+    url: siteUrl,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: '愛營養 iNutrition',
+    url: 'https://www.inutrition.com.tw',
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/favicon.svg', siteUrl).toString(),
+    },
+  },
+  articleSection: category,
+  timeRequired: `PT${readTime}M`,
+};
 ---
 
 <BaseLayout
@@ -34,6 +64,7 @@ const { title, category, publishDate, readTime, excerpt, heroImage, campaign } =
   description={excerpt}
   ogImage={heroImage}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(postSchema)} />
   <!-- 滾動進度條（建置指令第 524-534 行） -->
   <div class="progress-bar" id="progressBar"></div>
 

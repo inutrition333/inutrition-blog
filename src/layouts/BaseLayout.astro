@@ -43,9 +43,23 @@ const siteUrl = Astro.site?.toString() ?? 'https://blog.inutrition.com.tw';
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, siteUrl).toString();
 const ogImageUrl = ogImage ?? new URL('/og-default.jpg', siteUrl).toString();
 
-// GA4 追蹤 ID——之後讓使用者在 Vercel 設定 PUBLIC_GA_ID 環境變數
-// 沒設就不載 GA script（避免開發時也往 GA 送資料）
 const gaId = import.meta.env.PUBLIC_GA_ID;
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: '愛營養 iNutrition 部落格',
+  url: siteUrl,
+  publisher: {
+    '@type': 'Organization',
+    name: '愛營養 iNutrition',
+    url: 'https://www.inutrition.com.tw',
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/favicon.svg', siteUrl).toString(),
+    },
+  },
+};
 ---
 
 <!doctype html>
@@ -69,6 +83,9 @@ const gaId = import.meta.env.PUBLIC_GA_ID;
     <meta property="og:site_name" content="愛營養 iNutrition" />
     <meta property="og:locale" content="zh_TW" />
     <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- JSON-LD 結構化資料 -->
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
 
     <!-- favicon：等使用者提供正式檔案後替換 -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
