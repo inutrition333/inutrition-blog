@@ -620,12 +620,13 @@ import { CATEGORIES } from '../content/config';
       });
 
       function preprocessBlocks(md) {
-        // :::sunny
-        md = md.replace(/:::sunny\n([\s\S]*?):::/g, (_, content) => {
+        // :::sunny / :::sunnysays
+        md = md.replace(/:::(sunny|sunnysays)\n([\s\S]*?):::/g, (_, type, content) => {
+          const title = type === 'sunnysays' ? 'Sunny 營養師想說' : 'Sunny 營養師的小叮嚀';
           const paras = content.trim().split(/\n\n+/).map(p =>
             '<p>' + p.trim().replace(/\n/g, '<br>') + '</p>'
           ).join('');
-          return `<div class="sunny-note"><div class="note-title">Sunny 營養師的小叮嚀</div>${paras}</div>`;
+          return `<div class="sunny-note"><div class="note-title">${title}</div>${paras}</div>`;
         });
         // :::product
         md = md.replace(/:::product\n([\s\S]*?):::/g, (_, content) => {

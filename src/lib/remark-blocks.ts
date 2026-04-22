@@ -116,7 +116,7 @@ export function remarkBlocks() {
     visit(tree, (node: any) => {
       if (node.type === 'containerDirective') {
         const name = (node as ContainerDirective).name;
-        if (name === 'product' || name === 'sunny' || name === 'related') {
+        if (name === 'product' || name === 'sunny' || name === 'sunnysays' || name === 'related') {
           targets.push(node as ContainerDirective);
         }
       }
@@ -145,10 +145,11 @@ export function remarkBlocks() {
         continue;
       }
 
-      if (name === 'sunny') {
+      if (name === 'sunny' || name === 'sunnysays') {
         const html = childrenToHtml(node.children);
+        const defaultTitle = name === 'sunnysays' ? 'Sunny 營養師想說' : 'Sunny 營養師的小叮嚀';
         const out = renderSunnyNote({
-          title: node.attributes?.title,
+          title: node.attributes?.title || defaultTitle,
           htmlContent: html,
         });
         replaceNodeWithHtml(node, out);
