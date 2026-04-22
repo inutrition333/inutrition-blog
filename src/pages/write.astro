@@ -78,9 +78,13 @@ import { CATEGORIES } from '../content/config';
             <span class="sublabel">英文小寫+連字號。留空會自動產生。</span>
           </label>
           <label class="field">
-            <span class="label">主圖路徑</span>
-            <input id="heroImage" type="text" placeholder="/images/xxx.jpg" />
-            <span class="sublabel">先上傳圖到後台再把路徑貼過來；可留空。</span>
+            <span class="label">主圖</span>
+            <div class="upload-row">
+              <input id="heroImage" type="text" placeholder="上傳後自動填入，或手動貼路徑" />
+              <button type="button" id="upload-btn" class="upload-btn">📷 上傳圖片</button>
+              <input id="upload-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" />
+            </div>
+            <p id="upload-msg" class="upload-status" hidden></p>
           </label>
           <label class="check">
             <input id="draft" type="checkbox" />
@@ -257,6 +261,20 @@ import { CATEGORIES } from '../content/config';
       .msg { font-size: 14px; margin: 14px 0 0; padding: 10px 14px; border-radius: 8px; }
       .msg.ok { background: #eaf5ea; color: var(--ok); border: 1px solid #cde6cd; }
       .msg.err { background: #fbecec; color: var(--err); border: 1px solid #f1cfcf; }
+      .upload-row { display: flex; gap: 8px; align-items: center; }
+      .upload-row input { flex: 1; }
+      .upload-btn {
+        flex-shrink: 0;
+        background: #f0ece6; border: 1px solid var(--border);
+        border-radius: 8px; padding: 10px 14px;
+        font-size: 14px; cursor: pointer; font-family: inherit;
+        white-space: nowrap;
+      }
+      .upload-btn:hover { background: #e6e0d8; }
+      .upload-btn:disabled { opacity: 0.5; cursor: wait; }
+      .upload-status { font-size: 13px; margin: 6px 0 0; }
+      .upload-status.ok { color: var(--ok); }
+      .upload-status.err { color: var(--err); }
       .foot { margin-top: 24px; text-align: center; color: var(--text-light); }
       .foot a { color: var(--accent-dark); }
       code { background: #f0ece6; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
@@ -687,6 +705,72 @@ import { CATEGORIES } from '../content/config';
         text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
         text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
         return text;
+      }
+
+      // ===== 圖片上傳 =====
+      const uploadBtn   = document.getElementById('upload-btn');
+      const uploadInput = document.getElementById('upload-input');
+      const uploadMsg   = document.getElementById('upload-msg');
+
+      uploadBtn.addEventListener('click', () => uploadInput.click());
+
+      uploadInput.addEventListener('change', async () => {
+        const file = uploadInput.files[0];
+        if (!file) return;
+
+        // 5MB 限制
+        if (file.size > 5 * 1024 * 1024) {
+          showUploadMsg('err', '圖片超過 5MB，請先壓縮再上傳');
+          return;
+        }
+
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = '上傳中…';
+        showUploadMsg('ok', '上傳中，請稍候…');
+
+        try {
+          // 讀成 base64
+          const base64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+
+          // 加時間戳避免檔名衝突
+          const ts = Date.now();
+          const ext = file.name.match(/\.[^.]+$/)?.[0] || '.jpg';
+          const filename = file.name.replace(/\.[^.]+$/, '') + '-' + ts + ext;
+
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              password: sessionStorage.getItem(PW_KEY) || '',
+              filename,
+              content: base64,
+            }),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            showUploadMsg('err', data.error || '上傳失敗');
+            return;
+          }
+          document.getElementById('heroImage').value = data.path;
+          showUploadMsg('ok', '✅ 上傳成功！路徑已自動填入。');
+        } catch (e) {
+          showUploadMsg('err', '上傳失敗：' + e.message);
+        } finally {
+          uploadBtn.disabled = false;
+          uploadBtn.textContent = '📷 上傳圖片';
+          uploadInput.value = '';
+        }
+      });
+
+      function showUploadMsg(type, text) {
+        uploadMsg.className = 'upload-status ' + type;
+        uploadMsg.textContent = text;
+        uploadMsg.hidden = false;
       }
     </script>
   </body>
