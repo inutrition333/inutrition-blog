@@ -34,7 +34,7 @@ import { CATEGORIES } from '../content/config';
         <button id="discard-btn" class="inline-btn danger-text">捨棄</button>
       </div>
 
-      <!-- 發文表單 -->
+      <!-- 發文表單：資訊欄位 -->
       <section id="form" class="card" hidden>
         <label class="field">
           <span class="label">文章標題 <em>*</em></span>
@@ -87,7 +87,10 @@ import { CATEGORIES } from '../content/config';
             存成草稿（不公開、只存在 GitHub）
           </label>
         </details>
+      </section>
 
+      <!-- 內文編輯器 -->
+      <section id="body-card" class="card" hidden>
         <div class="body-section">
           <div class="tab-bar">
             <button type="button" id="tab-edit" class="tab tab-active">✏️ 編輯</button>
@@ -98,7 +101,7 @@ import { CATEGORIES } from '../content/config';
             <div id="edit-pane">
               <label class="field" style="margin-bottom:0">
                 <span class="label">文章內文（Markdown） <em>*</em></span>
-                <textarea id="body" rows="18" placeholder="在這裡貼整段 markdown。支援 :::product、:::sunny、:::related 區塊。"></textarea>
+                <textarea id="body" rows="22" placeholder="在這裡貼整段 markdown。支援 :::product、:::sunny、:::sunnysays、:::related 區塊。"></textarea>
               </label>
             </div>
           </div>
@@ -436,6 +439,7 @@ import { CATEGORIES } from '../content/config';
       function showForm() {
         loginCard.hidden = true;
         formCard.hidden = false;
+        document.getElementById('body-card').hidden = false;
         clearDraft();
         // 桌面版：初始渲染一次預覽
         if (window.matchMedia('(min-width: 700px)').matches) {
