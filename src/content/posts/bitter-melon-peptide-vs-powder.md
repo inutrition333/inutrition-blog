@@ -1,12 +1,13 @@
 ---
-title: "苦瓜胜肽跟山苦瓜粉差在哪裡？弄懂這件事，挑選會更有方向"
-category: "代謝循環"
+title: 苦瓜胜肽跟山苦瓜粉差在哪裡？弄懂這件事，挑選會更有方向
+category: 代謝循環
 publishDate: 2026-04-14
 readTime: 6
-heroImage: "/images/bitter-melon-hero.jpg"
-excerpt: "山苦瓜粉、苦瓜胜肽、PPK——名字都有「苦瓜」，價差卻好幾倍。Sunny 帶你看懂三者差別，下次挑選不再眼花撩亂。"
-campaign: "苦瓜胜肽_202604"
+heroImage: /images/bitter-melon-hero.jpg
+excerpt: 山苦瓜粉、苦瓜胜肽、PPK——名字都有「苦瓜」，價差卻好幾倍。Sunny 帶你看懂三者差別，下次挑選不再眼花撩亂。
+campaign: 苦瓜胜肽_202604
 featured: true
+draft: false
 ---
 
 以往我的家人在選保健品時，總感覺眼花撩亂、看了半天還是不知道哪個好？
@@ -96,12 +97,12 @@ PPK 是 **Polypeptide-K** 的縮寫，它是由美國耶魯大學進行的權威
 :::product
 image: /images/wenwen-bangbangtang.webp
 title: 穩穩棒棒堂 — 花蓮 4 號山苦瓜 + 苦瓜胜肽 PPK
-description: 山苦瓜粉顧廣度、苦瓜胜肽 PPK 顧深度，再搭配桑葉、專利肉桂、斐濟果粉、鉻、鋅、鎂，八種代謝相關成分一次到位。每批送驗、含量公開。
+description: 山苦瓜粉顧廣度、苦瓜胜肽 PPK 顧深度，再搭配桑葉、專利肉桂、斐濟果粉、鉻、鋅、鎂，八種成分嚴選足量，每批送驗含量公開。
 meepshopUrl: https://www.inutrition.com.tw/products/4c8f3fcc-d1f8-41a5-a9c1-c36b2e97fd17
 utmContent: 穩穩棒棒堂_文末
 :::
 
-我媽媽**安媽**買東西非常講究，如果是食品或保健品，她會千方百計想知道裡面到底加了什麼、放了多少，產地和品管都同步要求。如果是要賣給客人的合作商品，她甚至會親自飛到日本參觀當地工廠。
+我媽媽**安媽**買東西非常講究，如果是食品或保健品，她會千方百計想知道裡面到底加了什麼、放了多少，產地和品管都同步要求。如果是要賣給客人的合作商品，她甚至會安排親自飛到現場參觀當地環境。
 
 身為兒子同時又是營養師，做產品的時候，**高品質、安全對我們來說是基本的**，即使在成本飛漲的時代，依舊是我無法放棄的堅持。
 
