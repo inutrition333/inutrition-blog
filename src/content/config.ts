@@ -13,14 +13,13 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
-/** 固定六個分類（2026-04-16 版，使用者親自確認） */
+/** 固定五個分類（2026-04-23 版，使用者親自確認） */
 export const CATEGORIES = [
-  '體態管理',
   '腸胃保健',
-  '代謝循環',
+  '日常代謝',
   '美容養顏',
   '睡眠放鬆',
-  '銀髮族保養',
+  '樂齡保養',
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];

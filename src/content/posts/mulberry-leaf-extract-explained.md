@@ -1,6 +1,6 @@
 ---
 title: 桑葉萃取是什麼？為什麼保健品成分表上越來越常出現它
-category: 代謝循環
+category: 日常代謝
 publishDate: 2026-04-16
 readTime: 6
 heroImage: /images/mulberry-leaf-hero.jpg

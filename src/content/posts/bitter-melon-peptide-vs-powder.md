@@ -1,6 +1,6 @@
 ---
 title: 苦瓜胜肽跟山苦瓜粉差在哪裡？弄懂這件事，挑選會更有方向
-category: 代謝循環
+category: 日常代謝
 publishDate: 2026-04-14
 readTime: 6
 heroImage: /images/bitter-melon-hero.jpg
