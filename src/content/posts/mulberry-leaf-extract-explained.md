@@ -4,7 +4,7 @@ category: 代謝循環
 publishDate: 2026-04-16
 readTime: 6
 heroImage: /images/mulberry-leaf-hero.jpg
-excerpt: 桑葉不只是給蠶寶寶吃的——DNJ、Reducose 標準化萃取、跟苦瓜胜肽怎麼搭，Sunny 一次說清楚。
+excerpt: 桑葉不只是給蠶寶寶吃的——1-DNJ到底是什麼？專利Reducose 標準化萃取的厲害之處？Sunny營養師一次說清楚。
 campaign: 桑葉萃取_202604
 featured: false
 draft: false
