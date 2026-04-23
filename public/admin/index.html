@@ -39,7 +39,7 @@
               },
               { label: '發布日期', name: 'publishDate', widget: 'datetime', date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD' },
               { label: '閱讀時間（分鐘）', name: 'readTime', widget: 'number', default: 5, value_type: 'int', min: 1, max: 30 },
-              { label: '主圖（選填）', name: 'heroImage', widget: 'image', required: false, hint: '建議 1200px 寬、JPG 或 WebP、< 500KB' },
+              { label: '主圖路徑（選填）', name: 'heroImage', widget: 'string', required: false, hint: '先到 /write 頁面上傳圖片，再把路徑貼過來，例如：/images/uploads/xxx.jpg' },
               { label: '文章摘要', name: 'excerpt', widget: 'text', hint: '首頁列表顯示的 1-2 句話' },
               { label: '活動識別碼', name: 'campaign', widget: 'string', required: false, hint: '例如：苦瓜胜肽_202604' },
               { label: '精選文章？', name: 'featured', widget: 'boolean', default: false },
