@@ -84,6 +84,26 @@ const postSchema = {
 
     <ShareBar title={title} />
 
+    <div class="post-author-block">
+      <div class="post-author-avatar-wrap">
+        <img
+          class="post-author-avatar"
+          src="/images/sunny-avatar.jpg"
+          alt="黃君聖Sunny營養師"
+          width="56"
+          height="56"
+          loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <div class="post-author-fallback" aria-hidden="true">S</div>
+      </div>
+      <div class="post-author-info">
+        <p class="post-author-label">本文作者</p>
+        <a class="post-author-name" href="/about">黃君聖Sunny營養師</a>
+        <p class="post-author-desc">臺灣執照營養師・美國ACE-CPT國際私人教練・愛營養iNutrition品牌創辦人</p>
+      </div>
+    </div>
+
     <EndCTA campaign={campaign} />
   </article>
 
@@ -108,3 +128,65 @@ const postSchema = {
     })();
   </script>
 </BaseLayout>
+
+<style>
+  .post-author-block {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--color-highlight);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 32px 0 0;
+  }
+  .post-author-avatar-wrap {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+  .post-author-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    background: var(--color-accent-light);
+  }
+  .post-author-fallback {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 22px;
+    font-weight: 700;
+    font-family: var(--font-heading);
+  }
+  .post-author-label {
+    font-size: 11px;
+    color: var(--color-text-light);
+    letter-spacing: 1px;
+    margin: 0 0 2px;
+  }
+  .post-author-name {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-accent-dark);
+    text-decoration: none;
+    margin-bottom: 4px;
+  }
+  .post-author-name:hover {
+    text-decoration: underline;
+  }
+  .post-author-desc {
+    font-size: 13px;
+    color: var(--color-text-light);
+    line-height: 1.6;
+    margin: 0;
+  }
+</style>
