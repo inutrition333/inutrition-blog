@@ -1,0 +1,357 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BrandBar from '../components/BrandBar.astro';
+import Footer from '../components/Footer.astro';
+
+const siteUrl = 'https://blog.inutrition.com.tw';
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: '黃君聖Sunny營養師',
+  alternateName: ['黃君聖', 'Sunny營養師', 'Sunny 黃君聖'],
+  url: `${siteUrl}/about`,
+  image: `${siteUrl}/images/sunny-avatar.jpg`,
+  jobTitle: '營養師',
+  description:
+    '黃君聖Sunny營養師，臺灣執照營養師、美國ACE-CPT國際私人教練，專精中高齡飲食設計與家庭照顧營養規劃。愛營養iNutrition品牌創辦人，著有《Sunny營養師的168斷食瘦身餐盤》，FM97.3廣播節目主持人。',
+  hasCredential: [
+    {
+      '@type': 'EducationalOccupationalCredential',
+      name: '臺灣營養師執照',
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      name: '美國 ACE-CPT 國際私人教練認證',
+    },
+  ],
+  worksFor: {
+    '@type': 'Organization',
+    name: '愛營養 iNutrition',
+    url: 'https://www.inutrition.com.tw',
+  },
+  sameAs: [
+    'https://www.youtube.com/@sunnyi333',
+    'https://www.facebook.com/sunnyi333',
+    'https://www.instagram.com/sunnyi333',
+  ],
+};
+---
+
+<BaseLayout
+  title="黃君聖Sunny營養師｜愛營養 iNutrition 品牌創辦人"
+  description="黃君聖Sunny營養師——臺灣執照營養師、美國ACE-CPT國際私人教練，專精中高齡飲食設計，愛營養iNutrition品牌創辦人，FM97.3廣播節目主持人，著有《Sunny營養師的168斷食瘦身餐盤》。"
+  canonical={`${siteUrl}/about`}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
+  <BrandBar campaign="about_page" />
+
+  <main class="about-page">
+    <article class="about-card">
+
+      <!-- 頭像 + 名字 -->
+      <div class="about-hero">
+        <div class="about-avatar-wrap">
+          <img
+            class="about-avatar"
+            src="/images/sunny-avatar.jpg"
+            alt="黃君聖Sunny營養師"
+            width="120"
+            height="120"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <div class="about-avatar-fallback" aria-hidden="true">S</div>
+        </div>
+        <div class="about-hero-text">
+          <h1 class="about-name">黃君聖Sunny營養師</h1>
+          <p class="about-title">愛營養iNutrition品牌創辦人・臺灣執照營養師</p>
+          <p class="about-credentials">臺灣營養師・美國ACE-CPT國際私人教練・FM97.3主持人</p>
+        </div>
+      </div>
+
+      <!-- 社群按鈕 -->
+      <div class="about-social">
+        <a
+          class="social-btn yt"
+          href="https://www.youtube.com/@sunnyi333"
+          target="_top"
+          rel="noopener"
+        >▶ YouTube 頻道</a>
+        <a
+          class="social-btn fb"
+          href="https://www.facebook.com/sunnyi333"
+          target="_top"
+          rel="noopener"
+        >Facebook</a>
+        <a
+          class="social-btn ig"
+          href="https://www.instagram.com/sunnyi333"
+          target="_top"
+          rel="noopener"
+        >Instagram</a>
+      </div>
+
+      <hr class="about-divider" />
+
+      <!-- 故事 -->
+      <section class="about-section">
+        <h2>從五間服裝店老闆到營養師</h2>
+        <p>
+          成為營養師之前，Sunny 在台北開了五間流行服裝店。一次意外的轉折，他想幫家裡的媽媽和奶奶改善健康、順利瘦身，才走上飲食設計這條路。這段親身體驗，讓他深刻理解「照顧家人」有多難——不是買個保健品吃一吃就好，而是需要有人把複雜的營養學翻譯成日常能做到的事。
+        </p>
+        <p>
+          這也是他創立愛營養的起點：每個配方親自監製，每批送第三方檢驗，才讓家人吃、才讓大家買。
+        </p>
+      </section>
+
+      <section class="about-section">
+        <h2>專長</h2>
+        <ul class="about-list">
+          <li>中高齡飲食設計與體重管理</li>
+          <li>家庭照顧者的營養難題諮詢</li>
+          <li>168 間歇性斷食與代謝調整</li>
+          <li>保健食品成分解析與選購指南</li>
+        </ul>
+      </section>
+
+      <section class="about-section">
+        <h2>現任職務</h2>
+        <ul class="about-list">
+          <li>愛營養 iNutrition 品牌創辦人</li>
+          <li>弎弎弎有限公司負責人</li>
+          <li>FM 97.3 廣播節目主持人</li>
+        </ul>
+      </section>
+
+      <section class="about-section">
+        <h2>著作</h2>
+        <div class="about-book">
+          <div class="about-book-info">
+            <p class="book-title">《Sunny 營養師的 168 斷食瘦身餐盤》</p>
+            <p class="book-desc">
+              結合間歇性斷食與餐盤分配法，提供實際可操作的一週菜單與外食選擇技巧，幫助讀者在不忍耐、不挨餓的前提下維持健康體態。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="about-divider" />
+
+      <p class="about-closing">
+        想多了解 Sunny 的飲食觀念？訂閱他的
+        <a href="https://www.youtube.com/@sunnyi333" target="_top" rel="noopener">YouTube 頻道</a>，
+        或繼續瀏覽<a href="/">愛營養部落格</a>的文章。
+      </p>
+
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .about-page {
+    max-width: 760px;
+    margin: 48px auto;
+    padding: 0 20px 64px;
+  }
+
+  .about-card {
+    background: var(--color-card-bg);
+    border-radius: 18px;
+    padding: 40px 40px 48px;
+    box-shadow: 0 2px 16px var(--color-card-shadow);
+  }
+
+  /* 頭像區 */
+  .about-hero {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 28px;
+  }
+  .about-avatar-wrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+  }
+  .about-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    background: var(--color-accent-light);
+    border: 3px solid var(--color-accent-light);
+  }
+  .about-avatar-fallback {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 48px;
+    font-weight: 700;
+    font-family: var(--font-heading);
+  }
+  .about-hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .about-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.3;
+  }
+  .about-title {
+    font-size: 15px;
+    color: var(--color-accent-dark);
+    font-weight: 500;
+    margin: 0;
+  }
+  .about-credentials {
+    font-size: 13px;
+    color: var(--color-text-light);
+    margin: 0;
+  }
+
+  /* 社群按鈕 */
+  .about-social {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .social-btn {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .social-btn:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  .social-btn.yt {
+    background: var(--color-accent-dark);
+    color: #fff;
+  }
+  .social-btn.fb {
+    background: #1877f2;
+    color: #fff;
+  }
+  .social-btn.ig {
+    background: #e1306c;
+    color: #fff;
+  }
+
+  /* 分隔線 */
+  .about-divider {
+    border: none;
+    border-top: 1px solid var(--color-divider);
+    margin: 32px 0;
+  }
+
+  /* 各節 */
+  .about-section {
+    margin-bottom: 32px;
+  }
+  .about-section h2 {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 4px solid var(--color-accent);
+  }
+  .about-section p {
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--color-text);
+    margin-bottom: 12px;
+  }
+
+  /* 清單 */
+  .about-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .about-list li {
+    font-size: 16px;
+    color: var(--color-text);
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.7;
+  }
+  .about-list li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-size: 10px;
+    top: 6px;
+  }
+
+  /* 書 */
+  .about-book {
+    background: var(--color-highlight);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .book-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 8px !important;
+  }
+  .book-desc {
+    font-size: 15px;
+    color: var(--color-text-light);
+    line-height: 1.8;
+    margin: 0 !important;
+  }
+
+  /* 結尾 */
+  .about-closing {
+    font-size: 16px;
+    color: var(--color-text-light);
+    line-height: 1.9;
+    text-align: center;
+  }
+  .about-closing a {
+    color: var(--color-accent-dark);
+    text-decoration: underline;
+  }
+
+  /* 手機版 */
+  @media (max-width: 600px) {
+    .about-card {
+      padding: 28px 22px 36px;
+    }
+    .about-hero {
+      flex-direction: column;
+      text-align: center;
+    }
+    .about-name {
+      font-size: 24px;
+    }
+    .about-social {
+      justify-content: center;
+    }
+  }
+</style>
