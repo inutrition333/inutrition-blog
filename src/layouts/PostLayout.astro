@@ -85,22 +85,34 @@ const postSchema = {
     <ShareBar title={title} />
 
     <div class="post-author-block">
-      <div class="post-author-avatar-wrap">
-        <img
-          class="post-author-avatar"
-          src="/images/sunny-avatar.jpg"
-          alt="黃君聖Sunny營養師"
-          width="56"
-          height="56"
-          loading="lazy"
-          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-        />
-        <div class="post-author-fallback" aria-hidden="true">S</div>
+      <div class="post-author-top">
+        <div class="post-author-avatar-wrap">
+          <img
+            class="post-author-avatar"
+            src="/images/sunny-avatar.jpg"
+            alt="黃君聖Sunny營養師"
+            width="64"
+            height="64"
+            loading="lazy"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <div class="post-author-fallback" aria-hidden="true">S</div>
+        </div>
+        <div class="post-author-info">
+          <p class="post-author-label">本文作者</p>
+          <a class="post-author-name" href="/about">黃君聖Sunny營養師</a>
+          <p class="post-author-desc">台灣營養師證照・美國ACE-CPT國際私人教練證照・愛營養iNutrition品牌創辦人</p>
+        </div>
       </div>
-      <div class="post-author-info">
-        <p class="post-author-label">本文作者</p>
-        <a class="post-author-name" href="/about">黃君聖Sunny營養師</a>
-        <p class="post-author-desc">台灣營養師證照・美國ACE-CPT國際私人教練證照・愛營養iNutrition品牌創辦人</p>
+      <p class="post-author-book">📖 著作：《Sunny營養師的168斷食瘦身餐盤》</p>
+      <div class="post-author-actions">
+        <a
+          class="post-author-yt"
+          href="https://www.youtube.com/@sunnyi333"
+          target="_top"
+          rel="noopener"
+        >▶ Sunny 的 YouTube 頻道</a>
+        <a class="post-author-more" href="/about">了解更多</a>
       </div>
     </div>
 
@@ -132,22 +144,27 @@ const postSchema = {
 <style>
   .post-author-block {
     display: flex;
-    align-items: center;
-    gap: 16px;
+    flex-direction: column;
+    gap: 14px;
     background: var(--color-highlight);
     border-radius: 12px;
-    padding: 18px 20px;
+    padding: 20px 22px;
     margin: 32px 0 0;
+  }
+  .post-author-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
   .post-author-avatar-wrap {
     position: relative;
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
     flex-shrink: 0;
   }
   .post-author-avatar {
-    width: 56px;
-    height: 56px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     object-fit: cover;
     object-position: center top;
@@ -162,7 +179,7 @@ const postSchema = {
     background: var(--color-accent);
     color: #fff;
     border-radius: 50%;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     font-family: var(--font-heading);
   }
@@ -188,5 +205,50 @@ const postSchema = {
     color: var(--color-text-light);
     line-height: 1.6;
     margin: 0;
+  }
+  .post-author-book {
+    font-size: 13px;
+    color: var(--color-text-light);
+    margin: 0;
+    padding-top: 2px;
+    border-top: 1px solid var(--color-divider);
+  }
+  .post-author-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .post-author-yt {
+    display: inline-block;
+    background: var(--color-accent-dark);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .post-author-yt:hover {
+    background: #2e4d26;
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+  .post-author-more {
+    display: inline-block;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent-dark);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .post-author-more:hover {
+    background: var(--color-accent-light);
+    text-decoration: none;
+    transform: translateY(-1px);
   }
 </style>
