@@ -4,7 +4,7 @@ category: 日常代謝
 publishDate: 2026-04-16
 readTime: 6
 heroImage: /images/mulberry-leaf-hero.jpg
-excerpt: 桑葉不只是給蠶寶寶吃的——1-DNJ到底是什麼？專利Reducose 標準化萃取的厲害之處？Sunny營養師一次說清楚。
+excerpt: 桑葉萃取、1-DNJ、Reducose 專利成分是什麼？黃君聖Sunny營養師解析保健品成分表上桑葉萃取的真正功效與選購重點，看成分不再霧煞煞。
 campaign: 桑葉萃取_202604
 featured: false
 draft: false

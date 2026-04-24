@@ -4,7 +4,7 @@ category: 日常代謝
 publishDate: 2026-04-14
 readTime: 6
 heroImage: /images/bitter-melon-hero.jpg
-excerpt: 山苦瓜粉、苦瓜胜肽、PPK——名字都有「苦瓜」，價差卻好幾倍。Sunny 帶你看懂三者差別，下次挑選不再眼花撩亂。
+excerpt: 苦瓜胜肽、山苦瓜粉、PPK 傻傻分不清楚？黃君聖Sunny營養師解析三者成分差異與功效比較，教你看懂成分表，選到真正適合自己的苦瓜類保健品。
 campaign: 苦瓜胜肽_202604
 featured: true
 draft: false
