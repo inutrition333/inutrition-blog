@@ -188,6 +188,39 @@ img {
 .article-body a:hover {
   text-decoration-color: var(--color-accent);
 }
+.article-body table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 32px 0;
+  border-radius: 10px;
+  border: 1px solid var(--color-accent-light);
+}
+.article-body th {
+  background: var(--color-accent-light);
+  color: var(--color-accent-dark);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--color-accent);
+  white-space: nowrap;
+}
+.article-body td {
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(94, 138, 80, 0.15);
+  vertical-align: top;
+}
+.article-body tr:last-child td {
+  border-bottom: none;
+}
+.article-body tr:nth-child(even) td {
+  background: rgba(94, 138, 80, 0.04);
+}
 
 /* ===== 6. 重點框（highlight-box） ============================================ */
 .highlight-box {

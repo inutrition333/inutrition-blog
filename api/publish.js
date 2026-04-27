@@ -12,12 +12,11 @@ const REPO_NAME = 'inutrition-blog';
 const BRANCH = 'main';
 const POSTS_DIR = 'src/content/posts';
 const CATEGORIES = [
-  '體態管理',
   '腸胃保健',
-  '代謝循環',
+  '日常代謝',
   '美容養顏',
   '睡眠放鬆',
-  '銀髮族保養',
+  '樂齡保養',
 ];
 
 export default async function handler(req, res) {
