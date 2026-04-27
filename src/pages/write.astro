@@ -454,7 +454,7 @@ import { CATEGORIES } from '../content/config';
       function showForm() {
         loginCard.hidden = true;
         formCard.hidden = false;
-        clearDraft();
+        checkDraftBanner();
         // 桌面版：初始渲染一次預覽（rAF 確保 DOM 顯示後才執行）
         requestAnimationFrame(renderPreview);
       }
