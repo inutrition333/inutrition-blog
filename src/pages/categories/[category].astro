@@ -70,6 +70,10 @@ const categoryItems = getCategoryList(allPosts);
     </section>
   </main>
 
+  <div class="home-mobile-author">
+    <AuthorCard />
+  </div>
+
   <Footer />
 </BaseLayout>
 
@@ -113,14 +117,24 @@ const categoryItems = getCategoryList(allPosts);
     }
   }
 
+  .home-mobile-author {
+    display: none;
+  }
+
   @media (max-width: 768px) {
     .home-grid {
       grid-template-columns: minmax(0, 1fr);
       gap: 14px;
-      padding: 14px 14px 36px;
+      padding: 14px 14px 24px;
     }
     .home-sidebar-author {
       display: none;
+    }
+    .home-mobile-author {
+      display: block;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 14px 36px;
     }
   }
 </style>
