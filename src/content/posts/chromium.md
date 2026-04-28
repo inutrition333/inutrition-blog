@@ -4,7 +4,7 @@ category: 日常代謝
 publishDate: 2026-04-28
 readTime: 7
 heroImage: /images/uploads/chatgpt-image-2026-4-28-12_14_38-1777349689323.jpg
-excerpt: 鉻是衛福部認可的微量礦物質，黃君聖Sunny營養師將帶你了解誰該補、怎麼從食物與保健品補才對，以及挑鉻產品最容易踩雷的 3 件事。
+excerpt: 鉻是衛福部認可的微量礦物質，黃君聖Sunny營養師將帶你了解誰該補、怎麼從食物與保健品補才對，以及挑鉻產品最容易遇到的 3 種問題。
 campaign: 鉻_202604
 featured: false
 ---
