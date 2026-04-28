@@ -48,7 +48,7 @@ export function renderProductCard(props: ProductCardProps): string {
   const {
     image,
     imageAlt,
-    tag = 'Sunny 營養師自家開發',
+    tag = '黃君聖Sunny營養師 監製開發',
     title,
     description,
     meepshopUrl,
