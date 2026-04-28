@@ -23,6 +23,12 @@
   --max-width: 720px;
 }
 
+/* ===== embed 模式（MeepShop iframe）：隱藏品牌列與 footer =================== */
+html.embed-mode .brand-bar,
+html.embed-mode .footer {
+  display: none !important;
+}
+
 /* ===== 2. Reset + 基礎排版 =================================================== */
 *,
 *::before,

@@ -98,6 +98,13 @@ const websiteSchema = {
       rel="stylesheet"
     />
 
+    <!-- embed 模式：?embed=1 時隱藏品牌列與 footer，供 MeepShop iframe 嵌入 -->
+    <script is:inline>
+      if (new URLSearchParams(location.search).get('embed') === '1') {
+        document.documentElement.classList.add('embed-mode');
+      }
+    </script>
+
     <!-- GA4：只在有設 PUBLIC_GA_ID 時載入 -->
     {
       gaId && (
