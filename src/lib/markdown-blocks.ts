@@ -54,7 +54,7 @@ export function renderProductCard(props: ProductCardProps): string {
     meepshopUrl,
     utmContent,
     campaign,
-    ctaText = '開始我的日常保養',
+    ctaText = '開始每天的營養補給',
   } = props;
 
   const ctaUrl = buildUtmUrl({
