@@ -146,6 +146,22 @@ const postSchema = {
       table.parentNode.insertBefore(wrapper, table);
       wrapper.appendChild(table);
     });
+
+    // 列點「整個項目都是粗體」才套綠色，部分粗體不影響
+    function onlyStrong(el) {
+      var kids = Array.from(el.childNodes).filter(function (n) {
+        return !(n.nodeType === 3 && n.textContent.trim() === '');
+      });
+      return kids.length === 1 && kids[0].nodeName === 'STRONG' ? kids[0] : null;
+    }
+    document.querySelectorAll('.article-body ul li').forEach(function (li) {
+      var s = onlyStrong(li);
+      if (!s) {
+        var p = li.querySelector(':scope > p');
+        if (p) s = onlyStrong(p);
+      }
+      if (s) s.classList.add('list-title');
+    });
   </script>
 </BaseLayout>
 

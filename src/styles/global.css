@@ -166,7 +166,7 @@ img {
 .article-body li {
   margin-bottom: 6px;
 }
-.article-body ul > li > strong {
+.article-body .list-title {
   color: var(--color-accent-dark);
 }
 .article-body ul > li::marker {
