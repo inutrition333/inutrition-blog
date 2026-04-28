@@ -160,7 +160,10 @@ const postSchema = {
         var p = li.querySelector(':scope > p');
         if (p) s = onlyStrong(p);
       }
-      if (s) s.classList.add('list-title');
+      if (s) {
+        s.classList.add('list-title');
+        li.classList.add('list-title-item');
+      }
     });
   </script>
 </BaseLayout>
