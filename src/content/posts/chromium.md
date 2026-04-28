@@ -121,6 +121,14 @@ featured: false
 
 鉻這個成分，飲食基礎顧好是第一順位，真的有缺口再用保健品輔助，另外如果身體真的出現一些狀況，還是要優先跟醫師聊聊喔。
 
+:::product
+image: https://img.meepshop.com/6F8RhJuHeg7JEAIGzw_Ws36EIFjW3LvVZdjX3imvvSM/w:1920/q:80/Z3M6Ly9pbWcubWVlcGNsb3VkLmNvbS9tZWVwc2hvcC84ZjdkYjc5OC03YmNlLTRjNmEtOTNjMC0wNDYyNGI2NDg0MzMvZmlsZXMvNTJjMWViZDgtY2UxOS00MzhlLWIyMWYtYTk3ZjNjODJmZWRmLnBuZw
+title: 穩穩棒棒堂 — 山苦瓜桑葉複方膠囊
+description: 鉻搭配桑葉、肉桂、山苦瓜、PPK 等 8 種複方成分，標示透明、逐批送驗。
+meepshopUrl: https://www.inutrition.com.tw/products/4c8f3fcc-d1f8-41a5-a9c1-c36b2e97fd17
+utmContent: 穩穩棒棒堂_文末
+:::
+
 ## 鉻 FAQ：常見問題一次答
 
 **Q1：鉻一天吃多少才夠？**
@@ -159,11 +167,3 @@ featured: false
 二、**看配方完整度**：單方還是複方、是否搭配其他協同成分
 三、**看檢驗報告**：品牌有沒有送第三方逐批檢驗、報告是否公開。
 三個都過關，就是可以考慮下手的品項。
-
-:::product
-image: https://img.meepshop.com/6F8RhJuHeg7JEAIGzw_Ws36EIFjW3LvVZdjX3imvvSM/w:1920/q:80/Z3M6Ly9pbWcubWVlcGNsb3VkLmNvbS9tZWVwc2hvcC84ZjdkYjc5OC03YmNlLTRjNmEtOTNjMC0wNDYyNGI2NDg0MzMvZmlsZXMvNTJjMWViZDgtY2UxOS00MzhlLWIyMWYtYTk3ZjNjODJmZWRmLnBuZw
-title: 穩穩棒棒堂 — 山苦瓜桑葉複方膠囊
-description: 鉻搭配桑葉、肉桂、山苦瓜、PPK 等 8 種複方成分，標示透明、逐批送驗。
-meepshopUrl: https://www.inutrition.com.tw/products/4c8f3fcc-d1f8-41a5-a9c1-c36b2e97fd17
-utmContent: 穩穩棒棒堂_文末
-:::
