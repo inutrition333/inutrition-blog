@@ -1,13 +1,13 @@
 ---
-title: 苦瓜胜肽跟山苦瓜粉差在哪裡？弄懂這件事，挑選會更有方向
-category: 日常代謝
-publishDate: 2026-04-14
 readTime: 6
 heroImage: /images/bitter-melon-hero.jpg
 excerpt: 苦瓜胜肽、山苦瓜粉、PPK 傻傻分不清楚？黃君聖Sunny營養師解析三者成分差異與功效比較，教你看懂成分表，選到真正適合自己的苦瓜類保健品。
-campaign: 苦瓜胜肽_202604
-featured: true
 draft: false
+title: 苦瓜胜肽跟山苦瓜粉差在哪裡？弄懂這件事，挑選會更有方向
+category: 日常代謝
+publishDate: 2026-04-14
+campaign: 苦瓜胜肽_202604
+featured: false
 ---
 
 以往我的家人在選保健品時，總感覺眼花撩亂、看了半天還是不知道哪個好？
