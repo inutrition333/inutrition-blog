@@ -166,11 +166,17 @@ img {
 .article-body li {
   margin-bottom: 6px;
 }
+.article-body ul > li > strong {
+  color: var(--color-accent-dark);
+}
+.article-body ul > li::marker {
+  color: var(--color-accent);
+}
 .article-body h2 {
   font-family: var(--font-heading);
   font-size: 24px;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-accent-dark);
   margin-top: 56px;
   margin-bottom: 20px;
   padding-left: 16px;
