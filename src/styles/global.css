@@ -158,6 +158,14 @@ img {
   margin-bottom: 24px;
   font-weight: 400;
 }
+.article-body ol,
+.article-body ul {
+  padding-left: 1.5em;
+  margin-bottom: 24px;
+}
+.article-body li {
+  margin-bottom: 6px;
+}
 .article-body h2 {
   font-family: var(--font-heading);
   font-size: 24px;
@@ -188,17 +196,17 @@ img {
 .article-body a:hover {
   text-decoration-color: var(--color-accent);
 }
-.article-body table {
-  display: block;
+.table-scroll-wrapper {
   overflow-x: auto;
-  width: 100%;
-  max-width: 100%;
-  border-collapse: collapse;
-  font-size: 15px;
-  line-height: 1.7;
   margin: 32px 0;
   border-radius: 10px;
   border: 1px solid var(--color-accent-light);
+}
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.7;
 }
 .article-body th {
   background: var(--color-accent-light);
