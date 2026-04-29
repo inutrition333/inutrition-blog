@@ -6,7 +6,7 @@
  */
 
 import type { CollectionEntry } from 'astro:content';
-import { CATEGORIES, type Category } from '../content/config';
+import { CATEGORIES, CATEGORY_SLUG, type Category } from '../content/config';
 
 export type CategoryName = Category | '全部文章';
 
@@ -33,7 +33,7 @@ export function getCategoryList(allPosts: CollectionEntry<'posts'>[]): CategoryI
   for (const cat of CATEGORIES) {
     items.push({
       name: cat,
-      href: `/categories/${encodeURIComponent(cat)}/`,
+      href: `/categories/${CATEGORY_SLUG[cat]}/`,
       count: visiblePosts.filter((p) => p.data.category === cat).length,
     });
   }

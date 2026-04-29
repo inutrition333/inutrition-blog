@@ -25,6 +25,21 @@ export const CATEGORIES = [
 
 export type Category = (typeof CATEGORIES)[number];
 
+/** 中文分類 → 英文 URL slug */
+export const CATEGORY_SLUG: Record<Category, string> = {
+  '腸胃保健': 'gut-health',
+  '日常代謝': 'metabolism',
+  '美容養顏': 'beauty',
+  '睡眠放鬆': 'sleep',
+  '樂齡保養': 'senior-care',
+  '營養生活': 'nutrition-life',
+};
+
+/** 英文 URL slug → 中文分類（反查用） */
+export const SLUG_CATEGORY: Record<string, Category> = Object.fromEntries(
+  Object.entries(CATEGORY_SLUG).map(([zh, slug]) => [slug, zh as Category])
+);
+
 const postsCollection = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),
   schema: z.object({
