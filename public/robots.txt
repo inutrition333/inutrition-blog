@@ -1,5 +1,26 @@
+# 一般搜尋引擎：允許爬取（讓它們看到 noindex 指示，加速撤下已收錄頁面）
 User-agent: *
 Allow: /
 Disallow: /admin/
+
+# AI 爬蟲與 AI 搜尋：全站封鎖（避免內容被 AI 搜尋引用、搶走官網流量）
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: Bytespider
+User-agent: meta-externalagent
+User-agent: Meta-ExternalFetcher
+User-agent: Amazonbot
+User-agent: cohere-ai
+User-agent: DuckAssistBot
+Disallow: /
 
 Sitemap: https://blog.inutrition.com.tw/sitemap-index.xml
